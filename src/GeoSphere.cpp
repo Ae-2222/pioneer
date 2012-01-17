@@ -319,7 +319,7 @@ public:
 	RefCountedPtr<GeoPatchContext> ctx;
 	vector3d v[4];
 	vector3d *vertices;
-	vector3d *normals;
+	vector3f *normals;
 	vector3d *colors;
 	GLuint m_vbo;
 	GeoPatch *kids[4];
@@ -357,7 +357,7 @@ public:
  		}
 		m_roughLength = GEOPATCH_SUBDIVIDE_AT_CAMDIST / pow(2.0, depth) * m_distMult;
 		m_needUpdateVBOs = false;
-		normals = new vector3d[ctx->NUMVERTICES()];
+		normals = new vector3f[ctx->NUMVERTICES()];
 		vertices = new vector3d[ctx->NUMVERTICES()];
 		colors = new vector3d[ctx->NUMVERTICES()];
 	}
@@ -438,7 +438,7 @@ public:
 				const vector3d y1 = ev[x];
 				const vector3d y2 = vertices[x + ctx->edgeLen];
 				const vector3d norm = (x2-x1).Cross(y2-y1).Normalized();
-				normals[x] = norm;
+				normals[x] = vector3f(norm);
 				// make color
 				const vector3d p = GetSpherePoint(x*ctx->frac, 0);
 				const double height = colors[x].x;
@@ -453,7 +453,7 @@ public:
 				const vector3d y1 = vertices[x + (y-1)*ctx->edgeLen];
 				const vector3d y2 = vertices[x + (y+1)*ctx->edgeLen];
 				const vector3d norm = (x2-x1).Cross(y2-y1).Normalized();
-				normals[x + y*ctx->edgeLen] = norm;
+				normals[x + y*ctx->edgeLen] = vector3f(norm);
 				// make color
 				const vector3d p = GetSpherePoint(x*ctx->frac, y*ctx->frac);
 				const double height = colors[x + y*ctx->edgeLen].x;
@@ -469,7 +469,7 @@ public:
 				const vector3d y1 = vertices[x + (y-1)*ctx->edgeLen];
 				const vector3d y2 = ev[ctx->edgeLen-1-x];
 				const vector3d norm = (x2-x1).Cross(y2-y1).Normalized();
-				normals[x + y*ctx->edgeLen] = norm;
+				normals[x + y*ctx->edgeLen] = vector3f(norm);
 				// make color
 				const vector3d p = GetSpherePoint(x*ctx->frac, y*ctx->frac);
 				const double height = colors[x + y*ctx->edgeLen].x;
@@ -483,7 +483,7 @@ public:
 				const vector3d y1 = vertices[(y-1)*ctx->edgeLen];
 				const vector3d y2 = vertices[(y+1)*ctx->edgeLen];
 				const vector3d norm = (x2-x1).Cross(y2-y1).Normalized();
-				normals[y*ctx->edgeLen] = norm;
+				normals[y*ctx->edgeLen] = vector3f(norm);
 				// make color
 				const vector3d p = GetSpherePoint(0, y*ctx->frac);
 				const double height = colors[y*ctx->edgeLen].x;
@@ -552,7 +552,7 @@ public:
 			y1 = ev2[0];
 			y2 = vertices[ctx->edgeLen];
 			const vector3d norm = (x2-x1).Cross(y2-y1).Normalized();
-			normals[0] = norm;
+			normals[0] = vector3f(norm);
 			// make color
 			const vector3d pt = GetSpherePoint(0, 0);
 		//	const double height = colors[0].x;
@@ -567,7 +567,7 @@ public:
 			y1 = ev[ctx->edgeLen-1];
 			y2 = vertices[p + ctx->edgeLen];
 			const vector3d norm = (x2-x1).Cross(y2-y1).Normalized();
-			normals[p] = norm;
+			normals[p] = vector3f(norm);
 			// make color
 			const vector3d pt = GetSpherePoint(p*ctx->frac, 0);
 		//	const double height = colors[p].x;
@@ -582,7 +582,7 @@ public:
 			y1 = vertices[p + (p-1)*ctx->edgeLen];
 			y2 = ev2[0];
 			const vector3d norm = (x2-x1).Cross(y2-y1).Normalized();
-			normals[p + p*ctx->edgeLen] = norm;
+			normals[p + p*ctx->edgeLen] = vector3f(norm);
 			// make color
 			const vector3d pt = GetSpherePoint(p*ctx->frac, p*ctx->frac);
 		//	const double height = colors[p + p*ctx->edgeLen].x;
@@ -597,7 +597,7 @@ public:
 			y1 = vertices[(p-1)*ctx->edgeLen];
 			y2 = ev[ctx->edgeLen-1];
 			const vector3d norm = (x2-x1).Cross(y2-y1).Normalized();
-			normals[p*ctx->edgeLen] = norm;
+			normals[p*ctx->edgeLen] = vector3f(norm);
 			// make color
 			const vector3d pt = GetSpherePoint(0, p*ctx->frac);
 		//	const double height = colors[p*ctx->edgeLen].x;
@@ -741,7 +741,7 @@ public:
 				vector3d p = GetSpherePoint(x*ctx->frac, y*ctx->frac);
 				vector3d &col_r = colors[x + y*ctx->edgeLen];
 				const double height = col_r.x;
-				const vector3d &norm = normals[x + y*ctx->edgeLen];
+				const vector3d &norm = vector3d(normals[x + y*ctx->edgeLen]);
 				col_r = geosphere->GetColor(p, height, norm);
 			}
 		}
