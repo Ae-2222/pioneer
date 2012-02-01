@@ -304,10 +304,19 @@ static struct postprocessBuffers_t {
 
 		//printf("%f -> ", avgLum[0]);
 		avgLum[0] = std::max(float(exp(avgLum[0])), 0.03f);
+
+		//avgLum[1] is the fraction of the scene not black space
+		avgLum[0]/=avgLum[1];
+
 		//printf("%f\n", avgLum[0]);
 		// see reinhard algo
 		const float midGrey = 1.03f - 2.0f/(2.0f+log10(avgLum[0] + 1.0f));
-		
+		   
+
+		static Sint64 i = 0;i++;
+		if (double(i)/60.0 >= 1.0) { i=0; printf("avglum %f, midgrey %f\n",avgLum[0],midGrey);}
+
+
 		glDisable(GL_TEXTURE_2D);
 		halfSizeRT->BeginRTT();
 		sceneRT->BindTexture();
