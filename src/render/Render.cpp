@@ -314,7 +314,7 @@ static struct postprocessBuffers_t {
 		   
 
 		static Sint64 i = 0;i++;
-		if (double(i)/60.0 >= 1.0) { i=0; printf("avglum %f, midgrey %f\n",avgLum[0],midGrey);}
+		if (double(i)/60.0 >= 1.0) { i=0; printf("avglum %f, midgrey %f, fraction not space %f\n",avgLum[0],midGrey,avgLum[1]);}
 
 
 		glDisable(GL_TEXTURE_2D);
