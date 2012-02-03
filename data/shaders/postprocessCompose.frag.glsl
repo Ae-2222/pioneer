@@ -8,10 +8,7 @@ void main(void)
 	vec3 col = vec3(texture2DRect(fboTex, vec2(gl_FragCoord.x, gl_FragCoord.y)));
 	col += 0.1 * vec3(texture2DRect(bloomTex, vec2(gl_FragCoord.x*0.25, gl_FragCoord.y*0.25)));
 
-	/*if (dot(vec3(1.0,1.0,1.0),col) <= 0.0){
-		col.b = 1.0;
 
-	}*/
 	// This is the reinhard tonemapping algorithm, i think...
 	float X,Y,Z,x,y;
 	X = dot(vec3(0.4124, 0.3576, 0.1805), col);
@@ -20,7 +17,7 @@ void main(void)
 	x = X / (X+Y+Z);
 	y = Y / (X+Y+Z);
 	// Y is luminance. fiddle with it
-	Y = Y * (middleGrey / avgLum)*7.0; // scale luminance
+	Y = Y * (middleGrey / avgLum)*1.0; // scale luminance
 //	Y *= lum;
 	Y = Y / (1.0 + Y); // compress luminance
 	// convert back to RGB
