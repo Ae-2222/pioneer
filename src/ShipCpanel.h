@@ -7,11 +7,15 @@
 #include "Ship.h"
 #include "Serializer.h"
 #include "Game.h"
+#include "WorldView.h"
 
 class Body;
 class SpaceStation;
+class CameraSwitchWidget;
 
 class ShipCpanel: public Gui::Fixed {
+	friend class CameraSwitchWidget;
+
 public:
 	ShipCpanel();
     ShipCpanel(Serializer::Reader &rd);
@@ -44,6 +48,8 @@ private:
 	void OnMultiFuncUngrabFocus(multifuncfunc_t);
 	void HideMapviewButtons();
 
+	void SwitchToCamera(WorldView::CamType t);
+
 	enum MapView m_currentMapView;
 	multifuncfunc_t m_userSelectedMfuncWidget;
 	Gui::Label *m_clock;
@@ -54,6 +60,7 @@ private:
 	ScannerWidget *m_scanner;
 	MsgLogWidget *m_msglog;
 	UseEquipWidget *m_useEquipWidget;
+	Gui::MultiStateImageButton *m_camButton;
 	Gui::RadioGroup *m_leftButtonGroup, *m_rightButtonGroup;
 	Gui::ImageRadioButton *m_timeAccelButtons[6];
 	Gui::Widget *m_mapViewButtons[4];

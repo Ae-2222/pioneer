@@ -15,6 +15,23 @@
 #include "Lang.h"
 #include "Game.h"
 
+class CameraSwitchWidget : public Gui::Widget {
+public:
+	CameraSwitchWidget(ShipCpanel *panel, WorldView::CamType camType) : m_panel(panel), m_camType(camType) {}
+
+	virtual void Draw() {}
+	virtual void GetSizeRequested(float size[2]) { size[0] = size[1] = 0.0f; }
+
+	virtual void OnActivate() {
+		if (Pi::GetView() == Pi::worldView)
+			m_panel->SwitchToCamera(m_camType);
+	}
+
+private:
+	ShipCpanel *m_panel;
+	WorldView::CamType m_camType;
+};
+
 ShipCpanel::ShipCpanel(): Gui::Fixed(float(Gui::Screen::GetWidth()), 80)
 {
 	m_scanner = new ScannerWidget();
@@ -96,15 +113,16 @@ void ShipCpanel::InitObject()
 	m_timeAccelButtons[5] = b;
 		
 	m_leftButtonGroup = new Gui::RadioGroup();
-	Gui::MultiStateImageButton *cam_button = new Gui::MultiStateImageButton();
-	m_leftButtonGroup->Add(cam_button);
-	cam_button->SetSelected(true);
-	cam_button->AddState(WorldView::CAM_FRONT, PIONEER_DATA_DIR "/icons/cam_front.png", PIONEER_DATA_DIR "/icons/cam_front_on.png", Lang::FRONT_VIEW);
-	cam_button->AddState(WorldView::CAM_REAR, PIONEER_DATA_DIR "/icons/cam_rear.png", PIONEER_DATA_DIR "/icons/cam_rear_on.png", Lang::REAR_VIEW);
-	cam_button->AddState(WorldView::CAM_EXTERNAL, PIONEER_DATA_DIR "/icons/cam_external.png", PIONEER_DATA_DIR "/icons/cam_external_on.png", Lang::EXTERNAL_VIEW);
-	cam_button->SetShortcut(SDLK_F1, KMOD_NONE);
-	cam_button->onClick.connect(sigc::mem_fun(this, &ShipCpanel::OnChangeCamView));
-	Add(cam_button, 2, 56);
+	m_camButton = new Gui::MultiStateImageButton();
+	m_leftButtonGroup->Add(m_camButton);
+	m_camButton->SetSelected(true);
+	m_camButton->AddState(WorldView::CAM_FRONT, PIONEER_DATA_DIR "/icons/cam_front.png", PIONEER_DATA_DIR "/icons/cam_front_on.png", Lang::FRONT_VIEW);
+	m_camButton->AddState(WorldView::CAM_REAR, PIONEER_DATA_DIR "/icons/cam_rear.png", PIONEER_DATA_DIR "/icons/cam_rear_on.png", Lang::REAR_VIEW);
+	m_camButton->AddState(WorldView::CAM_EXTERNAL, PIONEER_DATA_DIR "/icons/cam_external.png", PIONEER_DATA_DIR "/icons/cam_external_on.png", Lang::EXTERNAL_VIEW);
+	m_camButton->AddState(WorldView::CAM_SIDEREAL, PIONEER_DATA_DIR "/icons/cam_sidereal.png", PIONEER_DATA_DIR "/icons/cam_sidereal_on.png", Lang::SIDEREAL_VIEW);
+	m_camButton->SetShortcut(SDLK_F1, KMOD_NONE);
+	m_camButton->onClick.connect(sigc::mem_fun(this, &ShipCpanel::OnChangeCamView));
+	Add(m_camButton, 2, 56);
 
 	Gui::MultiStateImageButton *map_button = new Gui::MultiStateImageButton();
 	m_leftButtonGroup->Add(map_button);
@@ -172,6 +190,19 @@ void ShipCpanel::InitObject()
 	img->SetToolTip(Lang::LASER_FIRE_DETECTED);
 	Add(img, 780, 37);
 	m_alertLights[2] = img;
+
+	CameraSwitchWidget *camSwitcher = new CameraSwitchWidget(this, WorldView::CAM_FRONT);
+	camSwitcher->SetShortcut(SDLK_1, KMOD_LSHIFT);
+	Add(camSwitcher,0,0);
+	camSwitcher = new CameraSwitchWidget(this, WorldView::CAM_REAR);
+	camSwitcher->SetShortcut(SDLK_2, KMOD_LSHIFT);
+	Add(camSwitcher,0,0);
+	camSwitcher = new CameraSwitchWidget(this, WorldView::CAM_EXTERNAL);
+	camSwitcher->SetShortcut(SDLK_3, KMOD_LSHIFT);
+	Add(camSwitcher,0,0);
+	camSwitcher = new CameraSwitchWidget(this, WorldView::CAM_SIDEREAL);
+	camSwitcher->SetShortcut(SDLK_4, KMOD_LSHIFT);
+	Add(camSwitcher,0,0);
 
 	m_connOnDockingClearanceExpired =
 		Pi::onDockingClearanceExpired.connect(sigc::mem_fun(this, &ShipCpanel::OnDockingClearanceExpired));
@@ -262,10 +293,16 @@ void ShipCpanel::Draw()
 	Gui::Fixed::Draw();
 }
 
-void ShipCpanel::OnChangeCamView(Gui::MultiStateImageButton *b)
+void ShipCpanel::SwitchToCamera(WorldView::CamType t)
 {
 	Pi::BoinkNoise();
-	Pi::worldView->SetCamType(WorldView::CamType(b->GetState()));
+	m_camButton->SetActiveState(int(t));
+	Pi::worldView->SetCamType(t);
+}
+
+void ShipCpanel::OnChangeCamView(Gui::MultiStateImageButton *b)
+{
+	SwitchToCamera(WorldView::CamType(b->GetState()));
 	Pi::SetView(Pi::worldView);
 }
 

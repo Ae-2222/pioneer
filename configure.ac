@@ -5,7 +5,7 @@ dnl Setup
 dnl ###########################################################################
 AC_PREREQ(2.59)
 
-AC_INIT([pioneer], [alpha-19-dev], [pioneer@pioneerspacesim.net])
+AC_INIT([pioneer], [alpha-20-dev], [pioneer@pioneerspacesim.net])
 dnl AC_CONFIG_HEADERS([config.h])
 
 AM_INIT_AUTOMAKE([1.9 foreign dist-bzip2 dist-xz dist-zip])
@@ -130,16 +130,6 @@ dnl ###########################################################################
 dnl Library checks
 dnl ###########################################################################
 
-AC_DEFUN([PIONEER_CHECK_CONFIG],
-    [PKG_CHECK_MODULES([$1], [$2], [], [
-	AC_PATH_PROG([$3], [$4], [AC_MSG_ERROR([$4 is required])])
-	][$1][_CFLAGS="`$][$3][ --cflags`"
-	][$1][_LIBS="`$][$3][ --libs`"
-	AC_SUBST([$1][_CFLAGS])
-	AC_SUBST([$1][_LIBS])
-	])
-    ])
-
 dnl FIXME: should really check for headers (if no pkgconfig)
 AC_DEFUN([PIONEER_CHECK_LIB],
     [PKG_CHECK_MODULES([$1], [$2], [],
@@ -175,14 +165,12 @@ case "$host" in
 esac
 
 dnl Check for SDL
-PIONEER_CHECK_CONFIG([SDL], [sdl], [SDLCONFIG], [sdl-config])
-AC_CHECK_LIB([SDL_image], [IMG_Load])
-SDL_LIBS="$SDL_LIBS -lSDL_image"
+PKG_CHECK_MODULES([SDL], [sdl SDL_image])
 
 dnl Check for Freetype
-PIONEER_CHECK_CONFIG([FREETYPE], [freetype2], [FTCONFIG], [freetype-config])
+PKG_CHECK_MODULES([FREETYPE], [freetype2])
 
-dnl Not using vorbis yet
+dnl Check for libvorbis
 PKG_CHECK_MODULES([VORBIS], [vorbisfile])
 
 dnl Optionally use external liblua

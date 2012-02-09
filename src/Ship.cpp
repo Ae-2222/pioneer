@@ -545,6 +545,8 @@ bool Ship::FireMissile(int idx, Ship *target)
 {
 	assert(target);
 
+	if (GetFlightState() != FLYING) return false;
+
 	const Equip::Type t = m_equipment.Get(Equip::SLOT_MISSILE, idx);
 	if (t == Equip::NONE) {
 		return false;
@@ -647,7 +649,7 @@ void Ship::TestLanded()
 				DisableBodyOnly();
 				ClearThrusterState();
 				m_flightState = LANDED;
-				Sound::PlaySfx("Rough_Landing", 1.0f, 1.0f, 0);
+				Sound::BodyMakeNoise(this, "Rough_Landing", 1.0f);
 				Pi::luaOnShipLanded->Queue(this, GetFrame()->GetBodyFor());
 			}
 		}
@@ -1037,7 +1039,8 @@ void Ship::Render(const vector3d &viewCoords, const matrix4x4d &viewTransform)
 	LmrObjParams &params = GetLmrObjParams();
 	
 	if ( (!this->IsType(Object::PLAYER)) ||
-	     (Pi::worldView->GetCamType() == WorldView::CAM_EXTERNAL) ) {
+	     (Pi::worldView->GetCamType() == WorldView::CAM_EXTERNAL) ||
+		(Pi::worldView->GetCamType() == WorldView::CAM_SIDEREAL)) {
 		m_shipFlavour.ApplyTo(&params);
 		SetLmrTimeParams();
 		params.angthrust[0] = float(-m_angThrusters.x);
