@@ -330,6 +330,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\DeadVideoLink.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\DynamicBody.cpp"
 				>
 			</File>
@@ -343,6 +347,14 @@
 			</File>
 			<File
 				RelativePath="..\..\src\FaceVideoLink.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\FileSelectorWidget.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\Font.cpp"
 				>
 			</File>
 			<File
@@ -370,7 +382,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\Game.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\GameConfig.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\GameLoaderSaver.cpp"
 				>
 			</File>
 			<File
@@ -650,6 +670,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\MathUtil.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\Missile.cpp"
 				>
 			</File>
@@ -663,10 +687,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\MyLuaMathTypes.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\NameGenerator.cpp"
 				>
 			</File>
 			<File
@@ -743,10 +763,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\render\RenderTarget.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\render\RenderTexture.cpp"
 				>
 			</File>
 			<File
@@ -1022,6 +1038,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\terrain\TerrainHeightMapped4.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\terrain\TerrainHeightMountainsCraters.cpp"
 				>
 			</File>
@@ -1066,11 +1086,15 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\TextureFont.cpp"
+				RelativePath="..\..\src\Texture.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\TextureManager.cpp"
+				RelativePath="..\..\src\TextureCache.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\TextureFont.cpp"
 				>
 			</File>
 			<File
@@ -1082,7 +1106,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\win32\src\win32-dirent.cpp"
+				RelativePath="..\src\win32-dirent.cpp"
 				>
 			</File>
 			<File
@@ -1104,6 +1128,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\Background.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\BezierCurve.h"
 				>
 			</File>
@@ -1113,6 +1141,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\BufferObject.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\buildopts.h"
 				>
 			</File>
 			<File
@@ -1156,11 +1188,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\custom_starsystems.h"
+				RelativePath="..\..\src\CustomSystem.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\CustomSystem.h"
+				RelativePath="..\..\src\DeadVideoLink.h"
 				>
 			</File>
 			<File
@@ -1184,7 +1216,19 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\FileSelectorWidget.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\fixed.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\FloatComparison.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\Font.h"
 				>
 			</File>
 			<File
@@ -1216,6 +1260,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\Game.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\GameConfig.h"
 				>
 			</File>
@@ -1224,15 +1272,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\GameLoaderSaver.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\GameMenuView.h"
 				>
 			</File>
 			<File
 				RelativePath="..\src\Gamma.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\GenericChatForm.h"
 				>
 			</File>
 			<File
@@ -1516,15 +1564,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\MathUtil.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\matrix4x4.h"
 				>
 			</File>
 			<File
 				RelativePath="..\..\src\Missile.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\Mission.h"
 				>
 			</File>
 			<File
@@ -1536,15 +1584,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\mylua.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\MyLuaMathTypes.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\NameGenerator.h"
 				>
 			</File>
 			<File
@@ -1572,19 +1612,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\PiLuaAPI.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\PiLuaClasses.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\PiLuaConstants.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\PiLuaModules.h"
 				>
 			</File>
 			<File
@@ -1596,10 +1624,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\PoliceChatForm.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\Polit.h"
 				>
 			</File>
@@ -1608,7 +1632,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\Quaternion.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\RefCounted.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\RefList.h"
 				>
 			</File>
 			<File
@@ -1625,10 +1657,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\render\RenderTarget.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\render\RenderTexture.h"
 				>
 			</File>
 			<File
@@ -1756,6 +1784,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\SystemPath.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\SystemView.h"
 				>
 			</File>
@@ -1776,11 +1808,15 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\TextureFont.h"
+				RelativePath="..\..\src\Texture.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\TextureManager.h"
+				RelativePath="..\..\src\TextureCache.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\TextureFont.h"
 				>
 			</File>
 			<File
@@ -1796,11 +1832,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\VideoLink.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\View.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\win32\src\win32-dirent.h"
+				RelativePath="..\src\win32-dirent.h"
 				>
 			</File>
 			<File

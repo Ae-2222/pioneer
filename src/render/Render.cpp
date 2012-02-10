@@ -304,7 +304,7 @@ static struct postprocessBuffers_t {
 		static Sint64 ii = 0;ii++;
 		double lumavg = avgLum[0];
 		//avgLum[1] is the fraction of the scene not black space, avgLum[2] = (lum>threshold)?avgLum[0]:0
-		avgLum[0]= float((avgLum[2])/avgLum[1]);
+		avgLum[0]= float((avgLum[2])/std::max(avgLum[1],float(0.01)));
 		
 		//printf("%f -> ", avgLum[0]);
 		avgLum[0] = std::max(float(exp(avgLum[0])), 0.03f);
