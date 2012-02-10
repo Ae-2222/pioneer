@@ -4,9 +4,12 @@ varying vec2 texcoord;
 
 void main(void)
 {
-	#define threshold 0.3
-	const float delta = 0.001;
+	#define threshold 0.085
+	const float delta = 0.001;//0.299,0.587,0.114
 	vec3 col = vec3(texture2DRect(fboTex, texcoord.st));
-	gl_FragColor = vec4(log(delta + dot(col, vec3(0.299,0.587,0.114))));
-	gl_FragColor.g = step(threshold,gl_FragColor.g);
+	float lum = dot(col,vec3(0.2126, 0.7152, 0.0722));
+	float switch_ = step(threshold,lum);// use to set to 0 if < threshold
+	gl_FragColor = vec4(log(delta + lum));
+	gl_FragColor.g = switch_;
+	gl_FragColor.b = switch_*gl_FragColor.b; 
 }

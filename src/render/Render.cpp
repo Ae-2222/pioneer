@@ -26,6 +26,15 @@ SHADER_CLASS_BEGIN(PostprocessComposeShader)
 	SHADER_UNIFORM_SAMPLER(bloomTex)
 	SHADER_UNIFORM_FLOAT(avgLum)
 	SHADER_UNIFORM_FLOAT(middleGrey)
+	SHADER_UNIFORM_VEC4(s1)
+	SHADER_UNIFORM_VEC4(s2)
+	SHADER_UNIFORM_VEC3(s3)
+	SHADER_UNIFORM_VEC4(o1)
+	SHADER_UNIFORM_VEC4(o2)
+	SHADER_UNIFORM_VEC3(o3)
+	SHADER_UNIFORM_FLOAT(min1)
+	SHADER_UNIFORM_FLOAT(THRESHOLD)
+	SHADER_UNIFORM_FLOAT(binwidth)
 SHADER_CLASS_END()
 
 SHADER_CLASS_BEGIN(PostprocessDownsampleShader)
@@ -301,20 +310,94 @@ static struct postprocessBuffers_t {
 		luminanceRT->UpdateMipmaps();
 		float avgLum[4];
 		glGetTexImage(GL_TEXTURE_2D, 7, GL_RGB, GL_FLOAT, avgLum);
-
+		static Sint64 ii = 0;ii++;
+		double lumavg = avgLum[0];
+		//avgLum[1] is the fraction of the scene not black space, avgLum[2] = (lum>threshold)?avgLum[0]:0
+		avgLum[0]= float((avgLum[2])/avgLum[1]);
+		
 		//printf("%f -> ", avgLum[0]);
 		avgLum[0] = std::max(float(exp(avgLum[0])), 0.03f);
 
-		//avgLum[1] is the fraction of the scene not black space
-		avgLum[0]/=avgLum[1];
+		float lumim[128*128*3];
+		glGetTexImage(GL_TEXTURE_2D, 0, GL_RGB, GL_FLOAT, lumim);
+
+		double min=100000.0;double max = log(0.001); 
+		for (int i = 0;i<(128*128);i++){
+			lumim[i*3]-=float(log(0.001));double lum = lumim[i*3];max=(lum>max)?lum:max; min=(lum<min)?lum:min;
+		}
+#define NUMBINS 10
+// threshold - lowest of 0.1 or 5% of average
+#define THRESHOLD -5.0/*std::min(4.6052,avgLum[0]+log(0.08))*/
+		if (max-min<0.00001) {max = min + 0.01;} //avoid div by 0
+		double range = max-min;
+		double binwidth = range/double(NUMBINS);
+		int binsTarget[NUMBINS+1] ={0,0,0,0,0,0,0,0,0,0,0}; 
+		int binsCurrent[NUMBINS+1] ={0,0,0,0,0,0,0,0,0,0,0};		
+		static int binsOld[NUMBINS+1] = {0,0,0,0,0,0,0,0,0,0,0};
+		static double minold;
+		static double binwidthOld;
+		
+		
+		// calculate min and binwidth values based on new (target) values and previous values
+		/*min = 0.01*(min-minold)+min;
+		minold = min;
+		binwidth = 0.01*(binwidth-binwidthOld)+binwidthOld;
+		binwidthOld = binwidth;
+		range = binwidth*NUMBINS;//used for debugging printfs */
+
+		for (int i = 0;i<(128*128);i++){
+			double lum = lumim[i*3];
+			if (lum<THRESHOLD) {binsTarget[0]++;}
+			else {int c = Clamp(int(ceil((lum-min)/binwidth)),1,10);binsTarget[c]+=1;} //1 to NUMBINS
+		}
+		
+		// set current value based on target and old value
+		int total = 0;int idx = NUMBINS;while(idx>-1){binsCurrent[idx] = int(floor(1.0*double(-binsOld[idx]+binsTarget[idx]))+binsOld[idx]); binsOld[idx] = binsCurrent[idx];binsCurrent[idx] = binsTarget[idx];total+=binsCurrent[idx];idx--;printf("%i\n",idx);}
+
+		double fraction=0.0;
+		float scaling[NUMBINS+1];
+		float offsets[NUMBINS+1];
+		int numValues = total-binsCurrent[0]; numValues = (numValues>=1)?numValues:1;
+		double logRange = log(255.0); //width of possible output values roughly 2 orders of magnitude
+		double spaceReservedFraction = 0.04;//exp(THRESHOLD+log(0.01))/4;
+		double pos = spaceReservedFraction; // small fraction is left to map values below threshold
+		for (int i = 0;i<NUMBINS;i++){
+			// set values to scaling and offsets such that:
+			// ((loglum-log(0.001)-min)-binwidth*binnum_minus1)*scaling[binnum] + offset[binnum] (where loglum = log(0.001+lum))
+			// maps the interval binwidth*binnum_minus1 to binwidth*binnum
+			// to the corresponding fraction of the output range (e.g. bottom bin has 20% of values so will get mapped to bottom 20% of output.)
+			fraction = double(binsCurrent[i+1])/double(numValues);
+			scaling[i+1] = float((1.0-spaceReservedFraction)*logRange*fraction/binwidth);
+			offsets[i+1] = float(pos);
+			if (double(ii)/60.0>=1.0){printf("bin %i, fraction in bin %f, cumulative %f, range %f, binwidth %f\n",i+1,fraction,pos/logRange,binwidth);}
+			pos += fraction*logRange*(1.0-spaceReservedFraction);
+		}
+		scaling[0] = float(spaceReservedFraction/(THRESHOLD - min));
+		offsets[0] = 0.0;
+
+
+
+		if (double(ii)/60.0>=1.0){
+			for (int i = 0;i<(101);i++){
+				double l = range*(double(i)/100.0)+min;//-log(0.001) in shaders
+				
+				int b = (l>THRESHOLD)?Clamp(int(ceil((l-min)/binwidth)),1,10):0;
+				
+				l = ((l-min)-binwidth*(double(b)-1.0))*scaling[b] + offsets[b];
+				printf("lum %f,out %f, lum frac %f, out frac %f, bin %i, scaling %f, offset %f,min %f, output range %f\n",range*(double(i)/100.0)+min,l,(double(i)/100.0)+min-min,(l-spaceReservedFraction)/(logRange*(1.0-spaceReservedFraction)),b,scaling[b],offsets[b],min,logRange); }
+				//for (int iii = 0;iii<=NUMBINS;iii++){
+				//}
+			
+		}
+
 
 		//printf("%f\n", avgLum[0]);
 		// see reinhard algo
-		const float midGrey = 1.03f - 2.0f/(2.0f+log10(avgLum[0] + 1.0f));
-		   
+		//float midGrey = 1.03f - 2.0f/(2.0f+log10(avgLum[0] + 1.0f));
+		float midGrey = 3.5+0.0*(-log(avgLum[0])+min+range/2.)/(range/2.0);   
 
-		static Sint64 i = 0;i++;
-		if (double(i)/60.0 >= 1.0) { i=0; printf("avglum %f, midgrey %f, fraction not space %f\n",avgLum[0],midGrey,avgLum[1]);}
+		
+		if (double(ii)/60.0 >= 1.0) { ii=0; printf("avglum %f, lum log %f, fraction not space %f\n",avgLum[0],lumavg,avgLum[1]);}
 
 
 		glDisable(GL_TEXTURE_2D);
@@ -378,7 +461,17 @@ static struct postprocessBuffers_t {
 		glActiveTexture(GL_TEXTURE1);
 		bloom1RT->BindTexture();
 		State::UseProgram(postprocessCompose);
+		postprocessCompose->set_s1(scaling[0],scaling[1],scaling[2],scaling[3]);
+		postprocessCompose->set_s2(scaling[4],scaling[5],scaling[6],scaling[7]);
+		postprocessCompose->set_s3(scaling[8],scaling[9],scaling[10]);
 		postprocessCompose->set_fboTex(0);
+		postprocessCompose->set_o1(offsets[0],offsets[1],offsets[2],offsets[3]);
+		postprocessCompose->set_o2(offsets[4],offsets[5],offsets[6],offsets[7]);
+		postprocessCompose->set_o3(offsets[8],offsets[9],offsets[10]);
+		postprocessCompose->set_binwidth(float(binwidth));
+		postprocessCompose->set_min1(float(min));
+		postprocessCompose->set_THRESHOLD(float(THRESHOLD));
+		
 		postprocessCompose->set_bloomTex(1);
 		postprocessCompose->set_avgLum(avgLum[0]);
 		//printf("Mid grey %f\n", midGrey);
