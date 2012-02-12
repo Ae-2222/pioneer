@@ -195,7 +195,7 @@ CustomSBody::CustomSBody(std::string s, std::string stype)
 CustomSBody* CustomSBody::l_height_map(lua_State *L, std::string f, unsigned int n) {
 	heightMapFilename = std::string(PIONEER_DATA_DIR)+"/heightmaps/"+f;
 	heightMapFractal = n;
-	if (n >= 2) luaL_error(L, "invalid terrain fractal type");
+	if (n >= 3) luaL_error(L, "invalid terrain fractal type");
 		return this; 
 }
 

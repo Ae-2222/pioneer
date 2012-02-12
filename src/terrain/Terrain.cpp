@@ -12,9 +12,10 @@ Terrain *Terrain::InstanceTerrain(const SBody *body)
 	if (body->heightMapFilename) {
 		const GeneratorInstancer choices[] = {
 			InstanceGenerator<TerrainHeightMapped,TerrainColorEarthLike>,
-			InstanceGenerator<TerrainHeightMapped2,TerrainColorRock>
+			InstanceGenerator<TerrainHeightMapped2,TerrainColorRock>,
+			InstanceGenerator<TerrainHeightMapped2,TerrainColorMapped>
 		};
-		assert(body->heightMapFractal < 2);
+		assert(body->heightMapFractal < 3);
 		return choices[body->heightMapFractal](body);
 	}
 
@@ -302,7 +303,6 @@ Terrain::Terrain(const SBody *body) : m_body(body), m_rand(body->seed), m_height
 				fread_or_die(m_heightMap, sizeof(Sint16), m_heightMapSizeX * m_heightMapSizeY, f);
 				break;
 			}
-
 			case 1: {
 				// XXX x and y reversed from above *sigh*
 				fread_or_die(&v, 2, 1, f); m_heightMapSizeY = v;
@@ -318,6 +318,38 @@ Terrain::Terrain(const SBody *body) : m_body(body), m_rand(body->seed), m_height
 				m_heightMapScaled = new Uint16[m_heightMapSizeX * m_heightMapSizeY];
 				fread_or_die(m_heightMapScaled, sizeof(Uint16), m_heightMapSizeX * m_heightMapSizeY, f);
 
+				break;
+			}
+			case 2: {
+				// XXX x and y reversed from earth format 
+				fread_or_die(&v, 2, 1, f); m_heightMapSizeY = v;
+				fread_or_die(&v, 2, 1, f); m_heightMapSizeX = v;
+
+				// read height scaling and min height which are doubles
+				double te;
+				fread_or_die(&te, 8, 1, f);
+				m_heightScaling = te;
+				fread_or_die(&te, 8, 1, f);
+				m_minh = te;
+
+				m_heightMapScaled = new Uint16[m_heightMapSizeX * m_heightMapSizeY];
+				fread_or_die(m_heightMapScaled, sizeof(Uint16), m_heightMapSizeX * m_heightMapSizeY, f);
+				
+				SDL_Surface *s = IMG_Load(PIONEER_DATA_DIR "/colormaps/moon.bmp");
+				m_colorMapSizeX = s->w; m_colorMapSizeY = s->h;
+				printf("x %i, y %i\n",m_colorMapSizeX,m_colorMapSizeY);
+
+				// XXX to do: convert to set format to avoid errors for 8 bit etc.
+				m_fmt = *s->format; // should be specified manually
+				SDL_Surface *s_ = SDL_ConvertSurface(s, &m_fmt, s->flags);
+
+				// copy data from sdl surf to int array
+				SDL_LockSurface(s_);
+ 				m_colorMap = new Sint32[m_colorMapSizeX*m_colorMapSizeY]; memcpy(m_colorMap,s_->pixels, sizeof(m_colorMap[m_colorMapSizeX*m_colorMapSizeY])); 
+				SDL_UnlockSurface(s_);
+
+				SDL_FreeSurface(s);
+				SDL_FreeSurface(s_);
 				break;
 			}
 

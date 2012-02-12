@@ -66,10 +66,16 @@ protected:
 	Sint16 *m_heightMap;
 	// For the moon and other bodies (with height scaling)
 	Uint16 *m_heightMapScaled;
+	
 	double m_heightScaling, m_minh;
 
 	int m_heightMapSizeX;
 	int m_heightMapSizeY;
+	// Colour mapped bodies
+	int *m_colorMap; 
+	int m_colorMapSizeX;
+	int m_colorMapSizeY;
+	SDL_PixelFormat m_fmt;
 
 	/** General attributes */
 	double m_maxHeight;
@@ -168,6 +174,7 @@ class TerrainColorGGSaturn2;
 class TerrainColorGGSaturn;
 class TerrainColorGGUranus;
 class TerrainColorIce;
+class TerrainColorMapped;
 class TerrainColorMethane;
 class TerrainColorRock2;
 class TerrainColorRock;
