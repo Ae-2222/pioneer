@@ -86,6 +86,10 @@ void Starfield::Draw(Graphics::Renderer *renderer, Camera *camera)
 
 		double brightness=1.0;
 		double light = 1.0; // light intensity relative to earths
+		bool fade = false;
+		double maxSunAngle = -2.0;
+
+		m_shader->Use();
 		
 		if (Pi::player&&camera){ // check camera exists in case in intro screen
 			
@@ -99,6 +103,8 @@ void Starfield::Draw(Graphics::Renderer *renderer, Camera *camera)
 
 				std::vector<LightBody> &l = camera->GetLightBodies();
 				light = 0.0;
+				
+				vector3d upDir = -(f->GetBodyFor()->GetPositionRelTo(camera->GetFrame()).Normalized());
 
 				for (std::vector<LightBody>::iterator i = l.begin(); i != l.end(); ++i) {
 					LightBody *lb = &(*i);
@@ -109,14 +115,15 @@ void Starfield::Draw(Graphics::Renderer *renderer, Camera *camera)
 					if ((light_ >= 0.25) &&(light_<=1.0)) {light_ = 1.0;} //if light is in medium range increase as stars are still dark
 					double t2 = light_;
 
-					double sunAngle = lb->position.Normalized().Dot(-(f->GetBodyFor()->GetPositionRelTo(camera->GetFrame()).Normalized()));
-					double t = sunAngle;
+					double sunAngle = lb->position.Normalized().Dot(upDir);
+					if (sunAngle>maxSunAngle) {maxSunAngle = sunAngle;}
 
 					if (sunAngle > 0.25) {sunAngle = 1.0;}
 					else if ((sunAngle <= 0.25)&& (sunAngle >= -0.8)) {sunAngle = ((sunAngle+0.08)/0.33);}
 					else /*if (sunAngle < -0.8)*/ {sunAngle = 0.0;}
 					
 					light += light_*sunAngle;
+					
 					static int iii = 0;//debug
 					if (double(iii)/60.0 > 1.0) {printf("light %f,cumulative light*sunangle %f,sun angle %f\n",light_, light,sunAngle);iii=0;}iii++; 
 				}
@@ -124,11 +131,11 @@ void Starfield::Draw(Graphics::Renderer *renderer, Camera *camera)
 				SBody *s = f->GetSBodyFor();
 				double height = (f->GetBodyFor()->GetPositionRelTo(camera->GetFrame()).Length());
 				
-				double pressure, density; 
-				s->planet->GetAtmosphericState(height,&pressure, &density);
-
 				Color c; double surfaceDensity;
 				s->GetAtmosphereFlavor(&c, &surfaceDensity);
+
+				double pressure, density; 
+				s->plnt->GetAtmosphericState(height,&pressure, &density);
 
 				// approximate optical thickness fraction as fraction of density remaining relative to earths
 				double opticalThicknessFraction = 1.0-(surfaceDensity-density)/surfaceDensity;
@@ -136,6 +143,26 @@ void Starfield::Draw(Graphics::Renderer *renderer, Camera *camera)
 				opticalThicknessFraction = pow(std::max(0.00001,opticalThicknessFraction),0.15); //max needed to avoid 0^power
 				// brightness depends on optical depth and intensity of light from all the stars
 				brightness = Clamp(1.0-(opticalThicknessFraction*light),0.0,1.0);
+
+				//stars are faded from sun level to the horizon to avoid 
+				// stars showing up in sunset lit area before the dark portion of the sky
+				fade=(maxSunAngle < 0.3);
+				if (fade){
+					m_shader->SetUniform("sunAngle", float(maxSunAngle));
+					m_shader->SetUniform("upDir", upDir);
+					
+#define Blend(u,v,a) (u*(1.0-a)+v*a)
+					//the dark level is the level stars are faded to - blend from overall brightness 
+					// to brightness*density remaining rel earth so worlds with thin atmospheres have less fade
+					double darklevel = //Blend(brightness,
+						brightness*(Clamp((surfaceDensity-density)/EARTH_ATM_SURF_DEN,0.0,1.0));//,
+						//maxSunAngle/0.3);
+#undef Blend
+					printf("darklevel %f",Clamp((surfaceDensity-density)/EARTH_ATM_SURF_DEN,0.0,1.0));
+					m_shader->SetUniform("darklevel", float(darklevel));
+				}
+
+				
 				//debug
 				static int i = 0;
 				if (double(i)/60.0 > 1.0) {printf("brightness %f, height %f,surface density %f,density %f, otp %f, light %f\n",brightness,height-s->GetRadius(),surfaceDensity,density,opticalThicknessFraction,light);i = 0;}i++;
@@ -145,9 +172,10 @@ void Starfield::Draw(Graphics::Renderer *renderer, Camera *camera)
 		}
 		//}
 		//brightness = 1.0;
-		m_shader->Use();
+		//fade = false;
 		m_shader->SetUniform("brightness", float(brightness));
-
+		m_shader->SetUniform("fade", (int(fade)>0)?1:0);
+		
 		
 	} else {
 		glDisable(GL_POINT_SMOOTH); //too large if smoothing is on
