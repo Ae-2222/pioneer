@@ -172,7 +172,7 @@ void Starfield::Draw(Graphics::Renderer *renderer, Camera *camera)
 		}
 		//}
 		//brightness = 1.0;
-		//fade = false;
+		
 		m_shader->SetUniform("brightness", float(brightness));
 		m_shader->SetUniform("fade", (int(fade)>0)?1:0);
 		

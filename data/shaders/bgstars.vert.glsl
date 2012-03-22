@@ -15,15 +15,21 @@ void main(void)
 
 	float b = brightness;
 	float angle=1.0;
+	vec4 col = gl_Color;
 	if (fade){
 		vec4 pos = gl_ModelViewMatrix * gl_Vertex;
 		pos.y = pos.y/0.4; // reverse scaling to increase density to represent milkyway
-		/*float */angle = dot(upDir,vec3(normalize(pos)));		
+		angle = dot(upDir,normalize(vec3(pos)));		
 		float blend = clamp(angle-sunAngle-0.1,0.0,0.2)/0.2;
 		brightness = mix(b, darklevel, blend);
-		if (angle < 0.3){b=1.0;}
+
+		// debug
+		// set stars above angle to blue and below to red.
+		if (angle < 0.4){b=1.0;col.r = 1.0;}
+		else {b=1.0;col.b = 1.0;}
+
 	}
-	gl_FrontColor = vec4(gl_Color.rgb,gl_Color.a*b);
+	gl_FrontColor = vec4(col.rgb/*gl_Color.rgb*/,gl_Color.a*b);
 	
 }
 
