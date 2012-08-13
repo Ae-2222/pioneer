@@ -3239,6 +3239,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\graphics\MaterialLegacy.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\graphics\MaterialLegacy.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\graphics\Renderer.cpp"
 				>
 			</File>
@@ -3264,14 +3272,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\graphics\RendererLegacy.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\graphics\Shader.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\graphics\Shader.h"
 				>
 			</File>
 			<File
@@ -3314,6 +3314,62 @@
 				RelativePath="..\..\src\graphics\VertexArray.h"
 				>
 			</File>
+			<Filter
+				Name="gl2"
+				>
+				<File
+					RelativePath="..\..\src\graphics\gl2\GeoSphereMaterial.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\graphics\gl2\GeoSphereMaterial.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\graphics\gl2\GL2Material.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\graphics\gl2\GL2Material.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\graphics\gl2\MultiMaterial.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\graphics\gl2\MultiMaterial.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\graphics\gl2\Program.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\graphics\gl2\Program.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\graphics\gl2\RingMaterial.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\graphics\gl2\RingMaterial.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\graphics\gl2\StarfieldMaterial.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\graphics\gl2\Uniform.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\graphics\gl2\Uniform.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="jenkins"
