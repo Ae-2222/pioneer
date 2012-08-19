@@ -1121,6 +1121,8 @@ void Pi::Start()
 	Gui::Screen::RemoveBaseWidget(menu);
 	delete menu;
 	delete background;
+	
+	Pi::renderer->SetAmbientColor(Color(0.2f, 0.2f, 0.2f, 1.f));
 
 	// game is set by HandleMenuKey if any game-starting option (start or
 	// load) is selected
