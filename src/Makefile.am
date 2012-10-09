@@ -150,6 +150,7 @@ noinst_HEADERS = \
 	SystemView.h \
 	TerrainBody.h \
 	Tombstone.h \
+	UIView.h \
 	VideoLink.h \
 	View.h \
 	WorldView.h \
@@ -286,6 +287,7 @@ pioneer_SOURCES	= \
 	SystemView.cpp \
 	TerrainBody.cpp \
 	Tombstone.cpp \
+	UIView.cpp \
 	View.cpp \
 	WorldView.cpp \
 	WorldViewCamera.cpp \
