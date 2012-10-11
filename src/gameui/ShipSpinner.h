@@ -1,0 +1,4 @@
+#ifndef _GAMEUI_SHIPSPINNER_H
+#define _GAMEUI_SHIPSPINNER_H
+
+#endif
