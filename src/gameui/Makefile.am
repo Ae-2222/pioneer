@@ -11,8 +11,11 @@ endif
 
 noinst_LIBRARIES = libgameui.a
 noinst_HEADERS = \
-	ShipSpinner.h
+	GameUI.h \
+	ShipSpinner.h \
+	Lua.h
 
 libgameui_a_SOURCES = \
 	ShipSpinner.cpp \
+	Lua.cpp \
 	LuaShipSpinner.cpp
