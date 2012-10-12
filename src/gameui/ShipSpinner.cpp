@@ -8,18 +8,14 @@ using namespace UI;
 namespace GameUI {
 
 ShipSpinner::ShipSpinner(Context *context, const ShipFlavour &flavour) : Widget(context),
-	m_flavour(flavour),
 	m_spin(0)
-{}
-
-void ShipSpinner::Layout()
 {
-	m_model = LmrLookupModelByName(ShipType::types[m_flavour.type].lmrModelName.c_str());
+	m_model = LmrLookupModelByName(ShipType::types[flavour.type].lmrModelName.c_str());
 
 	memset(&m_params, 0, sizeof(LmrObjParams));
 	m_params.animationNamespace = "ShipAnimation";
 	m_params.equipment = &m_equipment;
-	m_flavour.ApplyTo(&m_params);
+	flavour.ApplyTo(&m_params);
 	m_params.animValues[Ship::ANIM_WHEEL_STATE] = 1.0;
 	m_params.flightState = Ship::FLYING;
 
