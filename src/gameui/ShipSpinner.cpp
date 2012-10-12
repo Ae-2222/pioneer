@@ -27,6 +27,14 @@ ShipSpinner::ShipSpinner(Context *context, const ShipFlavour &flavour) : Widget(
 	m_light.SetType(Graphics::Light::LIGHT_DIRECTIONAL);
 }
 
+void ShipSpinner::Layout()
+{
+	Point size(GetSize());
+	Point activeArea(std::min(size.x, size.y));
+	Point activeOffset(std::max(0, (size.x-activeArea.x)/2), std::max(0, (size.y-activeArea.y)/2));
+	SetActiveArea(activeArea, activeOffset);
+}
+
 void ShipSpinner::Draw()
 {
 	Uint32 now = SDL_GetTicks();
@@ -45,8 +53,8 @@ void ShipSpinner::Draw()
 
 	r->SetLights(1, &m_light);
 
-	Point pos(GetAbsolutePosition());
-	Point size(GetSize());
+	Point pos(GetAbsolutePosition() + GetActiveOffset());
+	Point size(GetActiveArea());
 
 	r->SetViewport(pos.x, GetContext()->GetSize().y - pos.y - size.y, size.x, size.y);
 
