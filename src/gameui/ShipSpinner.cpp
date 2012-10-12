@@ -1,10 +1,16 @@
 #include "ShipSpinner.h"
 #include "Ship.h"
 #include "Pi.h"
+#include "Game.h"
 
 using namespace UI;
 
 namespace GameUI {
+
+ShipSpinner::ShipSpinner(Context *context, const ShipFlavour &flavour) : Widget(context),
+	m_flavour(flavour),
+	m_spin(0)
+{}
 
 void ShipSpinner::Layout()
 {
@@ -27,10 +33,9 @@ void ShipSpinner::Layout()
 
 void ShipSpinner::Draw()
 {
-	float rot1 = 0.0f, rot2 = 0.0f;
+	Uint32 now = SDL_GetTicks();
 
-	Point pos(GetAbsolutePosition());
-	Point size(GetSize());
+	m_params.time = double(now) * 0.001;
 
 	Graphics::Renderer *r = GetContext()->GetRenderer();
 
@@ -43,13 +48,22 @@ void ShipSpinner::Draw()
 	r->ClearDepthBuffer();
 
 	r->SetLights(1, &m_light);
-	r->SetViewport(pos.x, GetContext()->GetSize().y - pos.y, size.x, size.y);
 
-	matrix4x4f rot = matrix4x4f::RotateXMatrix(rot1);
-	rot.RotateY(rot2);
+	Point pos(GetAbsolutePosition());
+	Point size(GetSize());
+
+	r->SetViewport(pos.x, GetContext()->GetSize().y - pos.y - size.y, size.x, size.y);
+
+	float x = .5*m_spin;
+	float y = m_spin;
+
+	matrix4x4f rot = matrix4x4f::RotateXMatrix(x);
+	rot.RotateY(y);
 	rot[14] = -1.5f * m_model->GetDrawClipRadius();
 
 	m_model->Render(rot, &m_params);
+
+	m_spin += float(SDL_GetTicks()-now) * 0.001;
 }
 
 }

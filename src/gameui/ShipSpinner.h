@@ -11,13 +11,15 @@ namespace GameUI {
 
 class ShipSpinner : public UI::Widget {
 public:
-	ShipSpinner(UI::Context *context, const ShipFlavour &flavour) : UI::Widget(context), m_flavour(flavour) {}
+	ShipSpinner(UI::Context *context, const ShipFlavour &flavour);
 
 	virtual void Layout();
 	virtual void Draw();
 
 private:
 	ShipFlavour m_flavour;
+
+	float m_spin;
 
 	LmrModel *m_model;
 	LmrObjParams m_params;
