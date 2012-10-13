@@ -36,6 +36,7 @@ struct ShipType {
 
 	////////
 	Tag tag;
+	Type type;
 	std::string name;
 	std::string lmrModelName;
 	float linThrust[THRUSTER_MAX];
