@@ -8,7 +8,7 @@ using namespace UI;
 namespace GameUI {
 
 ShipSpinner::ShipSpinner(Context *context, const ShipFlavour &flavour) : Widget(context),
-	m_spin(0)
+	m_rotX(0), m_rotY(0)
 {
 	m_model = LmrLookupModelByName(ShipType::types[flavour.type].lmrModelName.c_str());
 
@@ -37,9 +37,7 @@ void ShipSpinner::Layout()
 
 void ShipSpinner::Draw()
 {
-	Uint32 now = SDL_GetTicks();
-
-	m_params.time = double(now) * 0.001;
+	m_params.time = double(SDL_GetTicks()) * 0.001;
 
 	Graphics::Renderer *r = GetContext()->GetRenderer();
 
@@ -58,16 +56,14 @@ void ShipSpinner::Draw()
 
 	r->SetViewport(pos.x, GetContext()->GetSize().y - pos.y - size.y, size.x, size.y);
 
-	float x = .5*m_spin;
-	float y = m_spin;
+	m_rotX += .5*Pi::GetFrameTime();
+	m_rotY += Pi::GetFrameTime();
 
-	matrix4x4f rot = matrix4x4f::RotateXMatrix(x);
-	rot.RotateY(y);
+	matrix4x4f rot = matrix4x4f::RotateXMatrix(m_rotX);
+	rot.RotateY(m_rotY);
 	rot[14] = -1.5f * m_model->GetDrawClipRadius();
 
 	m_model->Render(rot, &m_params);
-
-	m_spin += float(SDL_GetTicks()-now) * 0.001;
 }
 
 }

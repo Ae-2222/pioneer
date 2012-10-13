@@ -19,7 +19,7 @@ public:
 private:
 	ShipFlavour m_flavour;
 
-	float m_spin;
+	float m_rotX, m_rotY;
 
 	LmrModel *m_model;
 	LmrObjParams m_params;
