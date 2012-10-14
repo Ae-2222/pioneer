@@ -18,7 +18,7 @@ static SDL_Surface *s_galaxybmp;
 
 void Init()
 {
-	static const std::string filename("galaxy.bmp");
+	static const std::string filename("galaxy_density_map.bmp");
 
 	RefCountedPtr<FileSystem::FileData> filedata = FileSystem::gameDataFiles.ReadFile(filename);
 	if (!filedata) {
