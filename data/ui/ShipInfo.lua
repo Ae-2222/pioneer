@@ -11,17 +11,17 @@ ui.templates.ShipInfo = function (args)
 					ui:Label("Ship information"):SetFontSize("LARGE"),
 					ui:Grid(2,1)
 						:SetColumn(0, {
-							ui:VBox():PackEnd({
-								ui:Label("Hyperdrive:"):SetFontSize("SMALL"),
-								ui:Label("Hyperspace range:"):SetFontSize("SMALL"),
+							ui:VBox():SetFontSize("SMALL"):PackEnd({
+								ui:Label("Hyperdrive:"),
+								ui:Label("Hyperspace range:"),
 								ui:Margin(10),
-								ui:Label("Capacity:"):SetFontSize("SMALL"),
-								ui:Label("Free:"):SetFontSize("SMALL"),
-								ui:Label("Used:"):SetFontSize("SMALL"),
-								ui:Label("All-up weight:"):SetFontSize("SMALL"),
+								ui:Label("Capacity:"),
+								ui:Label("Free:"),
+								ui:Label("Used:"),
+								ui:Label("All-up weight:"),
 								ui:Margin(10),
-								ui:Label("Front weapon:"):SetFontSize("SMALL"),
-								ui:Label("Rear weapon:"):SetFontSize("SMALL")
+								ui:Label("Front weapon:"),
+								ui:Label("Rear weapon:")
 							})
 						})
 				})
