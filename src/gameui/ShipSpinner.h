@@ -13,6 +13,7 @@ class ShipSpinner : public UI::Widget {
 public:
 	ShipSpinner(UI::Context *context, const ShipFlavour &flavour);
 
+	virtual UI::Point PreferredSize() { return UI::Point(INT_MAX); }
 	virtual void Layout();
 	virtual void Draw();
 
