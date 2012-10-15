@@ -56,7 +56,7 @@ ui.templates.ShipInfo = function (args)
 			:SetColumn(0, {
 				ui:VBox(20):PackEnd({
 					ui:Label("Ship information"):SetFont("HEADING_LARGE"),
-					ui:Grid(2,1):SetFont("SMALL")
+					ui:Grid(2,1)
 						:SetColumn(0, {
 							ui:VBox():PackEnd({
 								ui:Label("Hyperdrive:"),
@@ -91,7 +91,7 @@ ui.templates.ShipInfo = function (args)
 							})
 						}),
 					ui:Label("Equipment"):SetFont("HEADING_NORMAL"),
-					ui:Grid(2,1):SetFont("SMALL")
+					ui:Grid(2,1)
 						:SetColumn(0, { ui:VBox():PackEnd(equipColumn[1]) })
 						:SetColumn(1, { ui:VBox():PackEnd(equipColumn[2]) })
 				})
