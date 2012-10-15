@@ -98,7 +98,7 @@ ui.templates.ShipInfo = function (args)
 			})
 			:SetColumn(1, {
 				ui:VBox(10)
-					:PackEnd(ui:Label(shipType.name))
+					:PackEnd(ui:Label(shipType.name):SetFontSize("LARGE"))
 					:PackEnd(UI.Game.ShipSpinner.New(ui, Game.player.shipType), { "EXPAND", "FILL" })
 			})
 	))
