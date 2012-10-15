@@ -55,8 +55,8 @@ ui.templates.ShipInfo = function (args)
 		ui:Grid(2,1)
 			:SetColumn(0, {
 				ui:VBox(20):PackEnd({
-					ui:Label("Ship information"):SetFontSize("LARGE"),
-					ui:Grid(2,1):SetFontSize("SMALL")
+					ui:Label("Ship information"):SetFont("LARGE"),
+					ui:Grid(2,1):SetFont("SMALL")
 						:SetColumn(0, {
 							ui:VBox():PackEnd({
 								ui:Label("Hyperdrive:"),
@@ -91,14 +91,14 @@ ui.templates.ShipInfo = function (args)
 							})
 						}),
 					ui:Label("Equipment"),
-					ui:Grid(2,1):SetFontSize("SMALL")
+					ui:Grid(2,1):SetFont("SMALL")
 						:SetColumn(0, { ui:VBox():PackEnd(equipColumn[1]) })
 						:SetColumn(1, { ui:VBox():PackEnd(equipColumn[2]) })
 				})
 			})
 			:SetColumn(1, {
 				ui:VBox(10)
-					:PackEnd(ui:Label(shipType.name):SetFontSize("LARGE"))
+					:PackEnd(ui:Label(shipType.name):SetFont("LARGE"))
 					:PackEnd(UI.Game.ShipSpinner.New(ui, Game.player.shipType), { "EXPAND", "FILL" })
 			})
 	))
