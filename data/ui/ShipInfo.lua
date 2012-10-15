@@ -43,7 +43,15 @@ ui.templates.ShipInfo = function (args)
 		end
 	end
 
-	return ui:Background():SetInnerWidget(ui:Margin(30):SetInnerWidget(
+	local topBar = ui:Grid(4,1)
+		:SetRow(0, {
+			ui:Margin(2):SetInnerWidget(ui:Button():SetInnerWidget(ui:HBox():PackEnd(ui:Label("Ship Information"), { "FILL", "EXPAND" }))),
+			ui:Margin(2):SetInnerWidget(ui:Button():SetInnerWidget(ui:HBox():PackEnd(ui:Label("Personal Information"), { "FILL", "EXPAND" }))),
+			ui:Margin(2):SetInnerWidget(ui:Button():SetInnerWidget(ui:HBox():PackEnd(ui:Label("Cargo"), { "FILL", "EXPAND" }))),
+			ui:Margin(2):SetInnerWidget(ui:Button():SetInnerWidget(ui:HBox():PackEnd(ui:Label("Missions"), { "FILL", "EXPAND" })))
+		})
+
+	local body = ui:Background():SetInnerWidget(ui:Margin(30):SetInnerWidget(
 		ui:Grid(2,1)
 			:SetColumn(0, {
 				ui:VBox(20):PackEnd({
@@ -94,4 +102,6 @@ ui.templates.ShipInfo = function (args)
 					:PackEnd(UI.Game.ShipSpinner.New(ui, Game.player.shipType), { "EXPAND", "FILL" })
 			})
 	))
+
+	return ui:VBox():PackEnd(topBar):PackEnd(body, { "EXPAND", "FILL" })
 end
