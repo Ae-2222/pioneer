@@ -43,7 +43,7 @@ ui.templates.ShipInfo = function (args)
 		end
 	end
 
-	local topBar = ui:Grid(4,1)
+	local topBar = ui:Grid(4,1):SetFont("HEADING_NORMAL")
 		:SetRow(0, {
 			ui:Margin(2):SetInnerWidget(ui:Button():SetInnerWidget(ui:HBox():PackEnd(ui:Label("Ship Information"), { "FILL", "EXPAND" }))),
 			ui:Margin(2):SetInnerWidget(ui:Button():SetInnerWidget(ui:HBox():PackEnd(ui:Label("Personal Information"), { "FILL", "EXPAND" }))),
@@ -55,7 +55,7 @@ ui.templates.ShipInfo = function (args)
 		ui:Grid(2,1)
 			:SetColumn(0, {
 				ui:VBox(20):PackEnd({
-					ui:Label("Ship information"):SetFont("LARGE"),
+					ui:Label("Ship information"):SetFont("HEADING_LARGE"),
 					ui:Grid(2,1):SetFont("SMALL")
 						:SetColumn(0, {
 							ui:VBox():PackEnd({
@@ -90,7 +90,7 @@ ui.templates.ShipInfo = function (args)
 								ui:Label(EquipType.GetEquipType(rearWeapon).name),
 							})
 						}),
-					ui:Label("Equipment"),
+					ui:Label("Equipment"):SetFont("HEADING_NORMAL"),
 					ui:Grid(2,1):SetFont("SMALL")
 						:SetColumn(0, { ui:VBox():PackEnd(equipColumn[1]) })
 						:SetColumn(1, { ui:VBox():PackEnd(equipColumn[2]) })
@@ -98,7 +98,7 @@ ui.templates.ShipInfo = function (args)
 			})
 			:SetColumn(1, {
 				ui:VBox(10)
-					:PackEnd(ui:Label(shipType.name):SetFont("LARGE"))
+					:PackEnd(ui:Label(shipType.name):SetFont("HEADING_LARGE"))
 					:PackEnd(UI.Game.ShipSpinner.New(ui, Game.player.shipType), { "EXPAND", "FILL" })
 			})
 	))
