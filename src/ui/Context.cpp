@@ -75,7 +75,7 @@ Context::Context(LuaManager *lua, Graphics::Renderer *renderer, int width, int h
 }
 
 Context::~Context() {
-    m_float->Detach();
+	m_float->Detach();
 }
 
 Widget *Context::GetWidgetAt(const Point &pos)
@@ -114,7 +114,7 @@ void Context::Draw()
 	r->SetDepthTest(false);
 
 	Single::Draw();
-    m_float->Draw();
+	m_float->Draw();
 
 	r->SetScissor(false);
 }
@@ -160,7 +160,7 @@ void Context::DrawWidget(Widget *w)
 
 	m_scissorStack.push(std::make_pair(newScissorPos, newScissorSize));
 
-    m_renderer->SetScissor(true, vector2f(newScissorPos.x, m_height - newScissorPos.y - newScissorSize.y), vector2f(newScissorSize.x, newScissorSize.y));
+	m_renderer->SetScissor(true, vector2f(newScissorPos.x, m_height - newScissorPos.y - newScissorSize.y), vector2f(newScissorSize.x, newScissorSize.y));
 
 	m_renderer->SetTransform(matrix4x4f::Translation(m_drawWidgetPosition.x + m_drawWidgetOffset.x, m_drawWidgetPosition.y + m_drawWidgetOffset.y, 0));
 
