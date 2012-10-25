@@ -258,7 +258,20 @@ local econTrade = function ()
 end
 
 local missions = function ()
-	return ui:Label("missions")
+	--ui:Button():SetInnerWidget(ui:HBox():PackEnd(ui:Label('More', { "FILL", "EXPAND" }))),
+	return ui:VBox():PackEnd({ui:Label(t("MISSIONS"))})
+	:PackEnd({ui:Grid(7,1)
+		:SetRow(0,{
+			-- Headers
+			ui:Label(t('TYPE')),
+			ui:Label(t('CLIENT')),
+			ui:Label(t('LOCATION')),
+			ui:Label(t('DUE')),
+			ui:Label(t('REWARD')),
+			ui:Label(t('STATUS')),
+			nil, -- Explicitly no header for the last column
+		})
+	})
 end
 
 ui.templates.InfoView = function (args)
@@ -266,7 +279,7 @@ ui.templates.InfoView = function (args)
 		{ "Ship Information",     shipInfo },
 		{ "Personal Information", personalInfo },
 		{ "Economy & Trade",      econTrade },
-		{ "Missions",             missions },
+		{ t("MISSIONS"),          missions },
 		{ t('Orbit'),             orbitalAnalysis },
     }
 
