@@ -119,8 +119,10 @@ public:
 	Graphics::Renderer *GetRenderer() const { return m_renderer; }
 	const Skin &GetSkin() const { return m_skin; }
 
-	RefCountedPtr<Text::TextureFont> GetFont() const { return GetFont(Widget::FONT_NORMAL); }
-	RefCountedPtr<Text::TextureFont> GetFont(Widget::Font font) const { return m_font[font]; }
+	const float &GetScale() const { return m_scale; }
+
+	RefCountedPtr<Text::TextureFont> GetFont() const { return GetFont(Widget::FONT_SIZE_NORMAL); }
+	RefCountedPtr<Text::TextureFont> GetFont(Widget::FontSize fontSize) const { return m_font[fontSize]; }
 
 private:
 	virtual Point PreferredSize() { return Point(); }
@@ -128,6 +130,8 @@ private:
 	Graphics::Renderer *m_renderer;
 	int m_width;
 	int m_height;
+
+	float m_scale;
 
 	bool m_needsLayout;
 
