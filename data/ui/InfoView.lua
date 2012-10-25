@@ -292,7 +292,7 @@ local missions = function ()
 	        ui:Button():SetInnerWidget(ui:HBox():PackEnd(ui:Label(t(mission.status), { "FILL", "EXPAND" }))),
 		})
 	end
-	return ui:VBox():PackEnd({ui:Label(t("MISSIONS"))})
+	return ui:VBox():PackEnd({ui:Label(t("MISSIONS")):SetFont("HEADING_LARGE")})
 	:PackEnd({
 		missiongrid
 	})
