@@ -151,6 +151,9 @@ local personalInfo = function ()
 	local player = PersistentCharacters.player
 	local faceFlags = { player.female and "FEMALE" or "MALE" }
 
+	local nameEntry = ui:TextEntry(player.name):SetFont("HEADING_LARGE")
+	nameEntry.onEnter:Connect(function (newName) print(newName) player.name = newName end )
+
 	return
 		ui:Grid(2,1)
 			:SetColumn(0, {
@@ -188,7 +191,7 @@ local personalInfo = function ()
 			})
 			:SetColumn(1, {
 				ui:VBox(10)
-					:PackEnd(ui:Label(player.name):SetFont("HEADING_LARGE"))
+					:PackEnd(nameEntry)
 					:PackEnd(UI.Game.Face.New(ui, faceFlags, player.seed), { "EXPAND", "FILL" })
 			})
 end
