@@ -1,4 +1,5 @@
 local ui = Engine.ui
+local t = Translate:GetTranslator()
 
 local shipInfo = function (args)
 	local shipId = Game.player.shipType
@@ -60,7 +61,8 @@ local shipInfo = function (args)
 								ui:Label("All-up weight:"),
 								ui:Margin(10),
 								ui:Label("Front weapon:"),
-								ui:Label("Rear weapon:")
+								ui:Label("Rear weapon:"),
+								ui:Label("Fuel:"),
 							})
 						})
 						:SetColumn(1, {
@@ -80,6 +82,7 @@ local shipInfo = function (args)
 								ui:Margin(10),
 								ui:Label(EquipType.GetEquipType(frontWeapon).name),
 								ui:Label(EquipType.GetEquipType(rearWeapon).name),
+								ui:Label(string.format("%d%%", Game.player.fuel)),
 							})
 						}),
 					ui:Label("Equipment"):SetFont("HEADING_NORMAL"),
@@ -93,6 +96,55 @@ local shipInfo = function (args)
 					:PackEnd(ui:Label(shipType.name):SetFont("HEADING_LARGE"))
 					:PackEnd(UI.Game.ShipSpinner.New(ui, Game.player.shipType), { "EXPAND", "FILL" })
 			})
+end
+
+local orbitalAnalysis = function ()
+	local orbitalBody -- What we, or our space station, are orbiting
+	local frameBody = Game.player.frameBody
+	if frameBody.superType == 'STARPORT' then
+		orbitalBody = Space.GetBody(frameBody.path:GetSystemBody().parent.index)
+	else
+		orbitalBody = frameBody
+	end
+	
+	local distance = Game.player:DistanceTo(orbitalBody)
+	local mass = orbitalBody.path:GetSystemBody().mass
+	local radius = orbitalBody.path:GetSystemBody().radius
+	local name = orbitalBody.label
+
+	local G = 6.67428e-11
+
+	local vCircular = math.sqrt((G * mass)/distance)
+	local vEscape = math.sqrt((2 * G * mass)/distance)
+	local vDescent = math.sqrt(G * mass * ((2 / distance) - (2 / (distance + radius))))
+
+	return
+		ui:VBox(20):PackEnd({
+			ui:Label(t('Orbital Analysis')):SetFont('HEADING_LARGE'),
+			ui:Label((t('Located {distance}km from the centre of {name}:')):interp({
+														-- convert to kilometres
+														distance = string.format('%6.2f',distance/1000),
+														name = name
+													})),
+			ui:Grid(2,1)
+				:SetColumn(0, {
+					ui:VBox():PackEnd({
+						ui:Label(t('Circular orbit speed:')),
+						ui:Label(t('Escape speed:')),
+						ui:Label(t('Descent-to-ground speed:')),
+					})
+				})
+				:SetColumn(1, {
+					ui:VBox():PackEnd({
+						-- convert to kilometres per second
+						ui:Label(string.format('%6.2fkm/s',vCircular/1000)),
+						ui:Label(string.format('%6.2fkm/s',vEscape/1000)),
+						ui:Label(string.format('%6.2fkm/s',vDescent/1000)),
+					})
+				})
+        })
+        :PackEnd(ui:MultiLineText((t('ORBITAL_ANALYSIS_NOTES')):interp({name = name})), { "FILL", "EXPAND" })
+
 end
 
 local personalInfo = function ()
@@ -206,7 +258,35 @@ local econTrade = function ()
 end
 
 local missions = function ()
-	return ui:Label("missions")
+	-- One row for each mission, plus a header
+	local missiongrid = ui:Grid(6,#PersistentCharacters.player.missions + 1)
+	missiongrid:SetRow(0,
+	{
+		-- Headers
+		ui:Label(t('TYPE')),
+		ui:Label(t('CLIENT')),
+		ui:Label(t('LOCATION')),
+		ui:Label(t('DUE')),
+		ui:Label(t('REWARD')),
+		ui:Label(t('STATUS')),
+	})
+	local count = 0 -- We need to count rows, can't rely on table keys
+	for ref,mission in ipairs(PersistentCharacters.player.missions) do
+		count = count + 1
+		mission.status = mission.status or "DORMANT"
+		missiongrid:SetRow(count,{
+			ui:Label(mission.type),
+			ui:Label(mission.client),
+			ui:Label(mission.location:GetSystemBody().name),
+			ui:Label(Format.Date(mission.due)),
+			ui:Label(Format.Money(mission.reward)),
+	        ui:Button():SetInnerWidget(ui:HBox():PackEnd(ui:Label(mission.status, { "FILL", "EXPAND" }))),
+		})
+	end
+	return ui:VBox():PackEnd({ui:Label(t("MISSIONS"))})
+	:PackEnd({
+		missiongrid
+	})
 end
 
 ui.templates.InfoView = function (args)
@@ -214,7 +294,8 @@ ui.templates.InfoView = function (args)
 		{ "Ship Information",     shipInfo },
 		{ "Personal Information", personalInfo },
 		{ "Economy & Trade",      econTrade },
-		{ "Missions",             missions }
+		{ t("MISSIONS"),          missions },
+		{ t('Orbit'),             orbitalAnalysis },
     }
 
 	local container = ui:Margin(30)
