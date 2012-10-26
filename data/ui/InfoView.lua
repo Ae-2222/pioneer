@@ -262,8 +262,10 @@ end
 
 local missions = function ()
 	-- One row for each mission, plus a header
-	local missiongrid = ui:Grid(6,#PersistentCharacters.player.missions + 1)
-	missiongrid:SetRow(0,
+	local headergrid  = ui:Grid(6,1)
+	local missiongrid = ui:Grid(6,#PersistentCharacters.player.missions)
+
+	headergrid:SetRow(0,
 	{
 		-- Headers
 		ui:Label(t('TYPE')),
@@ -273,9 +275,9 @@ local missions = function ()
 		ui:Label(t('REWARD')),
 		ui:Label(t('STATUS')),
 	})
+
 	local count = 0 -- We need to count rows, can't rely on table keys
 	for ref,mission in ipairs(PersistentCharacters.player.missions) do
-		count = count + 1
 		mission.status = mission.status or "DORMANT"
 		missiongrid:SetRow(count,{
 			ui:Label(mission.type),
@@ -285,11 +287,16 @@ local missions = function ()
 			ui:Label(Format.Money(mission.reward)),
 	        ui:Button():SetInnerWidget(ui:HBox():PackEnd(ui:Label(mission.status, { "FILL", "EXPAND" }))),
 		})
+		count = count + 1
 	end
-	return ui:VBox():PackEnd({ui:Label(t("MISSIONS"))})
-	:PackEnd({
-		missiongrid
-	})
+
+	return
+		ui:VBox(10)
+			:PackEnd({
+				ui:Label(t("MISSIONS")):SetFont("HEADING_LARGE"),
+				headergrid
+			})
+			:PackEnd( ui:Scroller():SetInnerWidget(missiongrid), { "FILL", "EXPAND" } )
 end
 
 ui.templates.InfoView = function (args)
