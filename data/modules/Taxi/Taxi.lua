@@ -86,7 +86,7 @@ local onChat = function (form, ref, option)
 		ads[ref] = nil
 
 		local mission = {
-			type	 = t("Taxi"),
+			type	 = "Taxi",
 			client	 = ad.client .. "\n[ " .. ad.group .. " ]",
 			boss     = ad.client,
 			location = ad.location,
@@ -256,7 +256,7 @@ local onEnterSystem = function (player)
 
 		if not mission.status and Game.time > mission.due then
 			mission.status = 'FAILED'
-			player:UpdateMission(ref, mission)
+			Mission.Update(ref, mission)
 			Comms.ImportantMessage(taxi_flavours[mission.flavour].wherearewe, mission.boss)
 		end
 	end
@@ -284,7 +284,7 @@ local onShipDocked = function (player, station)
 
 			remove_passengers(mission.group)
 
-			player:RemoveMission(ref)
+			Mission.Remove(ref)
 			missions[ref] = nil
 		end
 	end
@@ -299,7 +299,7 @@ local onShipUndocked = function (player, station)
 		remove_passengers(mission.group)
 
 		Comms.ImportantMessage(t("Hey!?! You are going to pay for this!!!"), mission.boss)
-		player:RemoveMission(ref)
+		Mission.Remove(ref)
 		missions[ref] = nil
 	end
 end
@@ -317,10 +317,8 @@ local onGameStart = function ()
 		local ref = ad.station:AddAdvert(ad.desc, onChat, onDelete)
 		ads[ref] = ad
 	end
-	for k,mission in pairs(loaded_data.missions) do
-		local mref = Mission.Add(mission)
-		missions[mref] = mission
-	end
+
+	missions = loaded_data.missions
 	passengers = loaded_data.passengers
 
 	loaded_data = nil

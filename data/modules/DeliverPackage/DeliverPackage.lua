@@ -68,7 +68,7 @@ local onChat = function (form, ref, option)
 		ads[ref] = nil
 
 		local mission = {
-			type	 = t("Delivery"),
+			type	 = "Delivery",
 			client	 = ad.client,
 			location = ad.location,
 			risk	 = ad.risk,
@@ -237,7 +237,7 @@ local onEnterSystem = function (player)
 
 		if not mission.status and Game.time > mission.due then
 			mission.status = 'FAILED'
-			player:UpdateMission(ref, mission)
+			Mission.Update(ref, mission)
 		end
 	end
 end
@@ -263,12 +263,12 @@ local onShipDocked = function (player, station)
 				player:AddMoney(mission.reward)
 			end
 
-			player:RemoveMission(ref)
+			Mission.Remove(ref)
 			missions[ref] = nil
 
 		elseif not mission.status and Game.time > mission.due then
 			mission.status = 'FAILED'
-			player:UpdateMission(ref, mission)
+			Mission.Update(ref, mission)
 		end
 
 	end
@@ -286,10 +286,8 @@ local onGameStart = function ()
 		local ref = ad.station:AddAdvert(ad.desc, onChat, onDelete)
 		ads[ref] = ad
 	end
-	for k,mission in pairs(loaded_data.missions) do
-		local mref = Mission.Add(mission)
-		missions[mref] = mission
-	end
+
+	missions = loaded_data.missions
 
 	loaded_data = nil
 end
