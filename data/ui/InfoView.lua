@@ -55,9 +55,9 @@ local shipInfo = function (args)
 								ui:Label(t("HYPERDRIVE")..":"),
 								ui:Label(t("HYPERSPACE_RANGE")..":"),
 								ui:Margin(10),
-								ui:Label(t("CAPACITY")..":"),
-								ui:Label(t("FREE")..":"),
-								ui:Label(t("USED")..":"),
+								ui:Label("Weigth empty:"),								
+								ui:Label("Capacity used:"),
+								ui:Label("Fuel weight:"),
 								ui:Label(t("TOTAL_WEIGHT")..":"),
 								ui:Margin(10),
 								ui:Label(t("FRONT_WEAPON")..":"),
@@ -75,10 +75,10 @@ local shipInfo = function (args)
 									}
 								)),
 								ui:Margin(10),
-								ui:Label(string.format("%dt", stats.maxCapacity)),
-								ui:Label(string.format("%dt", stats.freeCapacity)),
-								ui:Label(string.format("%dt", stats.usedCapacity)),
-								ui:Label(string.format("%dt", stats.totalMass)),
+								ui:Label(string.format("%dt", stats.totalMass - stats.usedCapacity)),								
+								ui:Label(string.format("%dt (%dt free)", stats.usedCapacity,  stats.freeCapacity)),
+								ui:Label(string.format("%dt (%dt max)", math.floor(Game.player.fuel/100*stats.maxFuelTankMass + 0.5), stats.maxFuelTankMass )),
+								ui:Label(string.format("%dt", math.floor(stats.totalMass+Game.player.fuel/100*stats.maxFuelTankMass + 0.5) )),
 								ui:Margin(10),
 								ui:Label(EquipType.GetEquipType(frontWeapon).name),
 								ui:Label(EquipType.GetEquipType(rearWeapon).name),
@@ -94,7 +94,7 @@ local shipInfo = function (args)
 			:SetColumn(1, {
 				ui:VBox(10)
 					:PackEnd(ui:Label(shipType.name):SetFont("HEADING_LARGE"))
-					:PackEnd(UI.Game.ShipSpinner.New(ui, Game.player.shipType), { "EXPAND", "FILL" })
+					:PackEnd(UI.Game.ShipSpinner.New(ui, Game.player.flavour), { "EXPAND", "FILL" })
 			})
 end
 
