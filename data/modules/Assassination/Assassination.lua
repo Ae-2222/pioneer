@@ -69,7 +69,7 @@ local onChat = function (form, ref, option)
 		ads[ref] = nil
 
 		local mission = {
-			type		= t("Assassination"),
+			type		= "Assassination",
 			backstation	= backstation,
 			boss		= ad.client.name,
 			client		= ad.shipname .. "\n(" .. ad.shipregid .. ")",
@@ -85,7 +85,7 @@ local onChat = function (form, ref, option)
 			target		= ad.target,
 		}
 
-		local mref = Game.player:AddMission(mission)
+		local mref = Mission.Add(mission)
 		missions[mref] = mission
 
 		form:SetMessage(t("Excellent."))
@@ -193,7 +193,7 @@ local onShipDestroyed = function (ship, body)
 				mission.notplayer = 'FALSE'
 			end
 			mission.ship = nil
-			Game.player:UpdateMission(ref, mission)
+			Mission.Update(ref, mission)
 			return
 		end
 	end
@@ -248,14 +248,14 @@ local onEnterSystem = function (ship)
 					end
 				else	-- too late
 					mission.status = 'FAILED'
-					ship:UpdateMission(ref, mission)
+					Mission.Update(ref, mission)
 				end
 			else
 				if not mission.ship:exists() then
 					mission.ship = nil
 					if mission.due < Game.time then
 						mission.status = 'FAILED'
-						ship:UpdateMission(ref, mission)
+						Mission.Update(ref, mission)
 					end
 				end
 			end
@@ -282,7 +282,7 @@ local onShipDocked = function (ship, station)
 				})
 				Comms.ImportantMessage(text, mission.boss)
 				ship:AddMoney(mission.reward)
-				ship:RemoveMission(ref)
+				Mission.Remove(ref)
 				missions[ref] = nil
 			elseif mission.status == 'FAILED' then
 				local ass_flavours = Translate:GetFlavours('Assassination')
@@ -297,13 +297,13 @@ local onShipDocked = function (ship, station)
 					})
 				end
 				Comms.ImportantMessage(text, mission.boss)
-				ship:RemoveMission(ref)
+				Mission.Remove(ref)
 				missions[ref] = nil
 			end
 		else
 			if mission.ship == ship then
 				mission.status = 'FAILED'
-				Game.player:UpdateMission(ref, mission)
+				Mission.Update(ref, mission)
 			end
 		end
 		return
@@ -395,10 +395,8 @@ local onGameStart = function ()
 		local ref = ad.station:AddAdvert(ad.desc, onChat, onDelete)
 		ads[ref] = ad
 	end
-	for k,mission in pairs(loaded_data.missions) do
-		local mref = Game.player:AddMission(mission)
-		missions[mref] = mission
-	end
+
+	missions = loaded_data.missions
 
 	loaded_data = nil
 end

@@ -18,6 +18,22 @@ Translate:Add({
 
 		-- Load dialog
 		['Select game to load...'] = 'Select game to load...',
+
+		-- Orbital analysis
+		['Orbit'] = 'Orbit',
+		['Orbital Analysis'] = 'Orbital Analysis',
+		['Located {distance}km from the centre of {name}:'] = 'Located {distance}km from the centre of {name}:',
+		['Circular orbit speed:'] = 'Circular orbit speed',
+		['Escape speed:'] = 'Escape speed:',
+		['Descent-to-ground speed:'] = 'Descent-to-ground speed:',
+		['Notes:'] = 'Notes:',
+		ORBITAL_ANALYSIS_NOTES = [[
+Circular orbit speed is given for a tangential velocity. The ship should be moving in a direction at 90° to the ship/{name} axis.
+
+Descent speed is an absolute minimum, and is also tangential. A slower speed or a lower angle will result in a course which intersects with the surface of {name}.
+
+Escape speed will in theory work in any direction, as long as the ship does not collide with {name} on the way.
+		]]
 	}
 })
 
@@ -38,5 +54,21 @@ Translate:Add({
 
 		-- Load dialog
 		['Select game to load...'] = 'Wybierz zapis do wczytania...',
+
+		-- Orbital analysis
+		['Orbit'] = 'Orbita',
+		['Orbital Analysis'] = 'Analiza Orbity',
+		['Located {distance}km from the centre of {name}:'] = 'Położenie {distance}km od centrum {name}:',
+		['Circular orbit speed:'] = 'Prędkość orbitalna:',
+		['Escape speed:'] = 'Prędkość ucieczki:',
+		['Descent-to-ground speed:'] = 'Prędkość graniczna:',
+		['Notes:'] = 'Uwagi:',
+		ORBITAL_ANALYSIS_NOTES = [[
+Prędkość orbitalna to stała prędkość z jaką powinien poruszać się statek pod kątem 90° względem osi statek/{name}.
+
+Prędkość graniczna, jest minimalną prędkością przy której statek pozostaje na orbicie.  Przy mniejszej prędkości lub kącie, rozpocznie się opadanie ku powierzchni {name}.
+
+Prędkość ucieczki teoretycznie powoduje opuszczenie orbity, jeśli tylko statek nie jest na kursie kolizyjnym z {name}.
+		]]				
 	}
 })
