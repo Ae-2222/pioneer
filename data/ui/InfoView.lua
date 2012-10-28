@@ -262,7 +262,8 @@ end
 
 local missions = function ()
 	-- This mission screen
-	local MissionScreen = ui:VBox(10)
+	local MissionScreen = ui:Margin(0)
+	local MissionList = ui:VBox(10)
 	-- One row for each mission, plus a header
 	local headergrid  = ui:Grid(6,1)
 	local missiongrid = ui:Grid(6,#PersistentCharacters.player.missions)
@@ -291,7 +292,7 @@ local missions = function ()
         -- Decide what happens when the button's clicked
 		local button = ui:Button():SetInnerWidget(ui:HBox():PackEnd(ui:Label(t(mission.status), { "FILL", "EXPAND" })))
 		local clickHandler = function ()
-			MissionScreen:Clear():PackEnd(ui:Label('Mission Details'):SetFont('HEADING_LARGE'))
+			MissionScreen:SetInnerWidget(ui:VBox():PackEnd({ui:Label('Mission Details'):SetFont('HEADING_LARGE')})
 			:PackEnd(
 			(({
 				ACTIVE = Mission.GetClick(mission.type),
@@ -300,7 +301,7 @@ local missions = function ()
 							end,
 				FAILED = function (ref,ui) return end,
 			})[mission.status])(ref)
-			)
+			))
 		end
 		button.onClick:Connect(clickHandler)
 		missiongrid:SetRow(count,{
@@ -309,20 +310,19 @@ local missions = function ()
 			ui:Label(missionLocationName),
 			ui:Label(Format.Date(mission.due)),
 			ui:Label(Format.Money(mission.reward)),
-			-- To do: Missions can hook code to this button, so that the player can
-			-- read the brief whilst in flight, or get access to whatever information,
-			-- interactive or not, necessary for the mission.
 			button,
 		})
 		count = count + 1
 	end
 
-	MissionScreen
+	MissionList
 			:PackEnd({
 				ui:Label(t("MISSIONS")):SetFont("HEADING_LARGE"),
 				headergrid
 			})
 			:PackEnd( ui:Scroller():SetInnerWidget(missiongrid), { "FILL", "EXPAND" } )
+
+	MissionScreen:SetInnerWidget(MissionList)
 
 	return MissionScreen
 end
