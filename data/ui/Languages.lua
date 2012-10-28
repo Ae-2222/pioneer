@@ -19,6 +19,29 @@ Translate:Add({
 		-- Load dialog
 		['Select game to load...'] = 'Select game to load...',
 
+		-- Equipment
+		['Equipment'] = 'Equipment',
+		['{quantity} Shield Generators'] = '{quantity} Shield Generators',
+		['{quantity} Occupied Passenger Cabins'] = '{quantity} Occupied Passenger Cabins',
+		['{quantity} Unoccupied Passenger Cabins'] = '{quantity} Unoccupied Passenger Cabins',
+		
+		-- Ship Information
+		['Ship information'] = 'Ship information',
+		['Weigth empty:'] = 'Weigth empty:',
+		['{range} light years ({maxRange} max)'] = '{range} light years ({maxRange} max)',
+		
+		-- Personal information
+		['Personal information'] = 'Personal information',
+		['Combat'] = 'Combat',
+		['Rating:'] = 'Rating:',
+		['Kills:'] = 'Kills:',
+		['Military'] = 'Military',
+		['Rank:'] = 'Rank:',
+		
+		-- Economy & Trade
+		['Economy & Trade'] = 'Economy & Trade',
+		['Total: '] = 'Total: ',
+		
 		-- Orbital analysis
 		['Orbit'] = 'Orbit',
 		['Orbital Analysis'] = 'Orbital Analysis',
@@ -55,6 +78,29 @@ Translate:Add({
 		-- Load dialog
 		['Select game to load...'] = 'Wybierz zapis do wczytania...',
 
+		-- Equipment
+		['Equipment'] = 'Wyposażenie',
+		['{quantity} Shield Generators'] = 'Genaratory Osłon: {quantity}',
+		['{quantity} Occupied Passenger Cabins'] = 'Zajęte kabiny pasażerskie: {quantity}',
+		['{quantity} Unoccupied Passenger Cabins'] = 'Wolne kabiny pasażerskie: {quantity}',
+		
+		-- Ship Information
+		['Ship information'] = 'Informacje o statku',
+		['Weigth empty:'] = 'Masa minimalna:',
+		['{range} light years ({maxRange} max)'] = '{range} lat świetlnych ({maxRange} maks.)',
+		
+		-- Personal information
+		['Personal information'] = 'Informacje o pilocie',
+		['Combat'] = 'Status bojowy',
+		['Rating:'] = 'Klasyfikacja:',
+		['Kills:'] = 'Pokonanych:',
+		['Military'] = 'Status wojskowy',
+		['Rank:'] = 'Ranga:',
+		
+		-- Economy & Trade
+		['Economy & Trade'] = 'Ekonomia i Handel',
+		['Total: '] = 'Łącznie: ',
+		
 		-- Orbital analysis
 		['Orbit'] = 'Orbita',
 		['Orbital Analysis'] = 'Analiza Orbity',

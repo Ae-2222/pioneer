@@ -26,13 +26,13 @@ local shipInfo = function (args)
 				if count > 1 then
 					if type == "SHIELD_GENERATOR" then
 						table.insert(equipColumn[t],
-							ui:Label(string.interp("{quantity} Shield Generators", { quantity = string.format("%d", count) })))
+							ui:Label(string.interp(t("{quantity} Shield Generators"), { quantity = string.format("%d", count) })))
 					elseif type == "PASSENGER_CABIN" then
 						table.insert(equipColumn[t],
-							ui:Label(string.interp("{quantity} Occupied Passenger Cabins", { quantity = string.format("%d", count) })))
+							ui:Label(string.interp(t("{quantity} Occupied Passenger Cabins"), { quantity = string.format("%d", count) })))
 					elseif type == "UNOCCUPIED_CABIN" then
 						table.insert(equipColumn[t],
-							ui:Label(string.interp("{quantity} Unoccupied Passenger Cabins", { quantity = string.format("%d", count) })))
+							ui:Label(string.interp(t("{quantity} Unoccupied Passenger Cabins"), { quantity = string.format("%d", count) })))
 					else
 						table.insert(equipColumn[t], ui:Label(et.name))
 					end
@@ -48,28 +48,28 @@ local shipInfo = function (args)
 		ui:Grid(2,1)
 			:SetColumn(0, {
 				ui:VBox(20):PackEnd({
-					ui:Label("Ship information"):SetFont("HEADING_LARGE"),
+					ui:Label(t("Ship information")):SetFont("HEADING_LARGE"),
 					ui:Grid(2,1)
 						:SetColumn(0, {
 							ui:VBox():PackEnd({
-								ui:Label("Hyperdrive:"),
-								ui:Label("Hyperspace range:"),
+								ui:Label(t("HYPERDRIVE")..":"),
+								ui:Label(t("HYPERSPACE_RANGE")..":"),
 								ui:Margin(10),
-								ui:Label("Weigth empty:"),								
-								ui:Label("Capacity used:"),
-								ui:Label("Fuel weight:"),
-								ui:Label("All-up weight:"),
+								ui:Label(t("Weigth empty:")),								
+								ui:Label(t("CAPACITY_USED")..":"),
+								ui:Label(t("FUEL_WEIGHT")..":"),
+								ui:Label(t("TOTAL_WEIGHT")..":"),
 								ui:Margin(10),
-								ui:Label("Front weapon:"),
-								ui:Label("Rear weapon:"),
-								ui:Label("Fuel:"),
+								ui:Label(t("FRONT_WEAPON")..":"),
+								ui:Label(t("REAR_WEAPON")..":"),
+								ui:Label(t("FUEL")..":"),
 							})
 						})
 						:SetColumn(1, {
 							ui:VBox():PackEnd({
 								ui:Label(EquipType.GetEquipType(hyperdrive).name),
 								ui:Label(string.interp(
-									"{range} light years ({maxRange} max)", {
+									t("{range} light years ({maxRange} max)"), {
 										range    = string.format("%.1f",stats.hyperspaceRange),
 										maxRange = string.format("%.1f",stats.maxHyperspaceRange)
 									}
@@ -85,7 +85,7 @@ local shipInfo = function (args)
 								ui:Label(string.format("%d%%", Game.player.fuel)),
 							})
 						}),
-					ui:Label("Equipment"):SetFont("HEADING_NORMAL"),
+					ui:Label(t("Equipment")):SetFont("HEADING_NORMAL"),
 					ui:Grid(2,1)
 						:SetColumn(0, { ui:VBox():PackEnd(equipColumn[1]) })
 						:SetColumn(1, { ui:VBox():PackEnd(equipColumn[2]) })
@@ -158,13 +158,13 @@ local personalInfo = function ()
 		ui:Grid(2,1)
 			:SetColumn(0, {
 				ui:VBox(20):PackEnd({
-					ui:Label("Personal information"):SetFont("HEADING_LARGE"),
-					ui:Label("Combat"):SetFont("HEADING_NORMAL"),
+					ui:Label(t("Personal information")):SetFont("HEADING_LARGE"),
+					ui:Label(t("Combat")):SetFont("HEADING_NORMAL"),
 					ui:Grid(2,1)
 						:SetColumn(0, {
 							ui:VBox():PackEnd({
-								ui:Label("Rating:"),
-								ui:Label("Kills:"),
+								ui:Label(t("Rating:")),
+								ui:Label(t("Kills:")),
 							})
 						})
 						:SetColumn(1, {
@@ -173,12 +173,12 @@ local personalInfo = function ()
 								ui:Label("23"),	      -- XXX
 							})
 						}),
-					ui:Label("Military"):SetFont("HEADING_NORMAL"),
+					ui:Label(t("Military")):SetFont("HEADING_NORMAL"),
 					ui:Grid(2,1)
 						:SetColumn(0, {
 							ui:VBox():PackEnd({
-								ui:Label("Allegiance:"),
-								ui:Label("Rank:"),
+								ui:Label(t("ALLEGIANCE")),
+								ui:Label(t("Rank:")),
 							})
 						})
 						:SetColumn(1, {
@@ -228,29 +228,29 @@ local econTrade = function ()
 		ui:Grid(2,1)
 			:SetColumn(0, {
 				ui:VBox(20):PackEnd({
-					ui:Label("Economy & Trade"):SetFont("HEADING_LARGE"),
+					ui:Label(t("Economy & Trade")):SetFont("HEADING_LARGE"),
 					ui:Grid(2,1)
 						:SetColumn(0, {
 							ui:VBox():PackEnd({
-								ui:Label("Cash:"),
+								ui:Label(t("CASH")..":"),
 								ui:Margin(10),
-								ui:Label("Cargo space:"),
-								ui:Label("Cabins:"),
+								ui:Label(t("CARGO_SPACE")..":"),
+								ui:Label(t("CABINS")..":"),
 							})
 						})
 						:SetColumn(1, {
 							ui:VBox():PackEnd({
 								ui:Label(string.format("$%.2f", cash)),
 								ui:Margin(10),
-								ui:Grid(2,1):SetRow(0, { ui:Label("Total: "..totalCargo.."t"), ui:Label("Used: "..usedCargo.."t") }),
-								ui:Grid(2,1):SetRow(0, { ui:Label("Total: "..totalCabins), ui:Label("Used: "..usedCabins) }),
+								ui:Grid(2,1):SetRow(0, { ui:Label(t("Total: ")..totalCargo.."t"), ui:Label(t("USED")..": "..usedCargo.."t") }),
+								ui:Grid(2,1):SetRow(0, { ui:Label(t("Total: ")..totalCabins), ui:Label(t("USED")..": "..usedCabins) }),
 							})
 						}),
 				})
 			})
 			:SetColumn(1, {
 				ui:VBox(10):PackEnd({
-					ui:Label("Cargo"):SetFont("HEADING_LARGE"),
+					ui:Label(t("CARGO")):SetFont("HEADING_LARGE"),
 					ui:Scroller():SetInnerWidget(
 						ui:Grid(2,1)
 							:SetColumn(0, { ui:VBox():PackEnd(cargoNameColumn) })
@@ -311,11 +311,11 @@ end
 
 ui.templates.InfoView = function (args)
 	local buttonDefs = {
-		{ "Ship Information",     shipInfo },
-		{ "Personal Information", personalInfo },
-		{ "Economy & Trade",      econTrade },
-		{ t("MISSIONS"),          missions },
-		{ t('Orbit'),             orbitalAnalysis },
+		{ t("Ship Information"),     shipInfo },
+		{ t("Personal Information"), personalInfo },
+		{ t("Economy & Trade"),      econTrade },
+		{ t("MISSIONS"),             missions },
+		{ t('Orbit'),                orbitalAnalysis },
     }
 
 	local container = ui:Margin(30)
