@@ -183,8 +183,8 @@ local personalInfo = function ()
 						})
 						:SetColumn(1, {
 							ui:VBox():PackEnd({
-								ui:Label("None"), -- XXX
-								ui:Label("None"), -- XXX
+								ui:Label(t('NONE')), -- XXX
+								ui:Label(t('NONE')), -- XXX
 							})
 						})
 				})
