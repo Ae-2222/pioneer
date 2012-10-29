@@ -342,7 +342,7 @@ local onClick = function (ref)
 													howmany = taxi_flavours[mission.flavour].howmany,
 													danger = taxi_flavours[mission.flavour].danger,
 													amount = Format.Money(mission.reward),
-												}), {'FILL','EXPAND'}))
+												})), {'FILL','EXPAND'})
 		})
 		:SetColumn(1, {
 			ui:VBox()
