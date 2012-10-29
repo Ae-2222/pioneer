@@ -117,7 +117,7 @@ void Grid::ClearRow(size_t rowNum)
 	for (size_t i = 0; i < m_numCols; i++) {
 		const size_t n = rowNum*m_numCols+i;
 		if (m_widgets[n]) {
-			RemoveWidget(m_widgets[n]);
+			Container::RemoveWidget(m_widgets[n]);
 			m_widgets[n] = 0;
 		}
 	}
@@ -130,7 +130,7 @@ void Grid::ClearColumn(size_t colNum)
 	for (size_t i = 0; i < m_numRows; i++) {
 		const size_t n = i*m_numCols+colNum;
 		if (m_widgets[n]) {
-			RemoveWidget(m_widgets[n]);
+			Container::RemoveWidget(m_widgets[n]);
 			m_widgets[n] = 0;
 		}
 	}
@@ -141,7 +141,16 @@ void Grid::Clear()
 	for (size_t i = 0; i < m_numRows*m_numCols; i++)
 		m_widgets[i] = 0;
 
-	RemoveAllWidgets();
+	Container::RemoveAllWidgets();
+}
+
+void Grid::RemoveWidget(Widget *widget)
+{
+	for (size_t i = 0; i < m_numRows*m_numCols; i++)
+		if (m_widgets[i] == widget) {
+			Container::RemoveWidget(widget);
+			m_widgets[i] = 0;
+		}
 }
 
 }
