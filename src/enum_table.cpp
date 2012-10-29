@@ -13,6 +13,7 @@
 #include "ShipType.h"
 #include "SpaceStation.h"
 #include "galaxy/StarSystem.h"
+#include "gameui/Face.h"
 #include "ui/Align.h"
 #include "ui/Box.h"
 #include "ui/Event.h"
@@ -311,6 +312,14 @@ const struct EnumItem ENUM_BodySuperType[] = {
 	{ 0, 0 },
 };
 
+const struct EnumItem ENUM_GameUIFaceFlags[] = {
+	{ "RAND", GameUI::Face::RAND },
+	{ "MALE", GameUI::Face::MALE },
+	{ "FEMALE", GameUI::Face::FEMALE },
+	{ "ARMOUR", GameUI::Face::ARMOUR },
+	{ 0, 0 },
+};
+
 const struct EnumItem ENUM_UIAlignDirection[] = {
 	{ "TOP_LEFT", UI::Align::TOP_LEFT },
 	{ "TOP", UI::Align::TOP },
@@ -369,13 +378,18 @@ const struct EnumItem ENUM_UIImageStretchMode[] = {
 	{ 0, 0 },
 };
 
-const struct EnumItem ENUM_UIFontSize[] = {
-	{ "INHERIT", UI::Widget::FONT_SIZE_INHERIT },
-	{ "XSMALL", UI::Widget::FONT_SIZE_XSMALL },
-	{ "SMALL", UI::Widget::FONT_SIZE_SMALL },
-	{ "NORMAL", UI::Widget::FONT_SIZE_NORMAL },
-	{ "LARGE", UI::Widget::FONT_SIZE_LARGE },
-	{ "XLARGE", UI::Widget::FONT_SIZE_XLARGE },
+const struct EnumItem ENUM_UIFont[] = {
+	{ "XSMALL", UI::Widget::FONT_XSMALL },
+	{ "SMALL", UI::Widget::FONT_SMALL },
+	{ "NORMAL", UI::Widget::FONT_NORMAL },
+	{ "LARGE", UI::Widget::FONT_LARGE },
+	{ "XLARGE", UI::Widget::FONT_XLARGE },
+	{ "HEADING_XSMALL", UI::Widget::FONT_HEADING_XSMALL },
+	{ "HEADING_SMALL", UI::Widget::FONT_HEADING_SMALL },
+	{ "HEADING_NORMAL", UI::Widget::FONT_HEADING_NORMAL },
+	{ "HEADING_LARGE", UI::Widget::FONT_HEADING_LARGE },
+	{ "HEADING_XLARGE", UI::Widget::FONT_HEADING_XLARGE },
+	{ "INHERIT", UI::Widget::FONT_INHERIT },
 	{ 0, 0 },
 };
 
