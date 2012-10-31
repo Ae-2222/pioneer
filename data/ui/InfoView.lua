@@ -117,7 +117,13 @@ local orbitalAnalysis = function ()
 
 	local vCircular = math.sqrt((G * mass)/distance)
 	local vEscape = math.sqrt((2 * G * mass)/distance)
+	local changeInSpeedToEscape = Game.player:ChangeInSpeedRequiredToEscapeGravityWellOf(frameBody)
+
 	local vDescent = math.sqrt(G * mass * ((2 / distance) - (2 / (distance + radius))))
+
+	-- debug: prints out escape speed instead of circular orbit speed and change in speed required instead of Escape speed.
+	-- escape speed should be the same as change in speed required with set speed = 0. increasing to 1km/s relative to the body should result in a similar decrease.
+	-- since this is done using a different derivation from first principles it verifies the escape speed implementation..as far as the science is concerned anyway.
 
 	return
 		ui:VBox(20):PackEnd({
@@ -126,21 +132,24 @@ local orbitalAnalysis = function ()
 														-- convert to kilometres
 														distance = string.format('%6.2f',distance/1000),
 														name = name
-													})),
+												})),
+				
 			ui:Grid(2,1)
 				:SetColumn(0, {
 					ui:VBox():PackEnd({
 						ui:Label(t('Circular orbit speed:')),
 						ui:Label(t('Escape speed:')),
+						--ui:Label(t('Change in speed required to escape:')),
 						ui:Label(t('Descent-to-ground speed:')),
 					})
 				})
 				:SetColumn(1, {
 					ui:VBox():PackEnd({
 						-- convert to kilometres per second
-						ui:Label(string.format('%6.2fkm/s',vCircular/1000)),
-						ui:Label(string.format('%6.2fkm/s',vEscape/1000)),
-						ui:Label(string.format('%6.2fkm/s',vDescent/1000)),
+						--ui:Label(string.format('%6.2fkm/s',vCircular/1000)),
+						ui:Label(string.format('%6.3fkm/s',vEscape/1000)),
+						ui:Label(string.format('%6.3fkm/s',changeInSpeedToEscape/1000)),
+						ui:Label(string.format('%6.3fkm/s',vDescent/1000)),
 					})
 				})
         })
