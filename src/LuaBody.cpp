@@ -290,6 +290,139 @@ static int l_body_distance_to(lua_State *l)
 	return 1;
 }
 
+/*
+ * Method: IsAnAstronomicalBody
+ *
+ * Determine if the body is an astronomical body
+ * like a planet or a star and not like a space station or a grav point.
+ *
+ * > isAnAstronomicalBody = body:IsAnAstronomicalBody()
+ *
+ * Parameters:
+ *            body - a body of any type.
+ *
+ * Availability:
+ *
+ *   alpha 28
+ *
+ * Status:
+ *
+ *   Experimental
+ */
+
+static int l_body_is_an_astronomical_body(lua_State *l)
+{
+	Body *b = LuaBody::GetFromLua(1);
+	bool isAstronomicalBody = false;
+	if (b->IsType(Object::PLANET)) {
+		isAstronomicalBody = !((b->GetSystemBody()->GetSuperType() == SystemBody::SUPERTYPE_NONE)
+	                          ||(b->GetSystemBody()->GetSuperType() == SystemBody::SUPERTYPE_STARPORT));
+	}
+	lua_pushnumber(l, isAstronomicalBody);
+	return 1;
+}
+
+/*
+ * Method: change_in_speed_required_to_escape_gravity_well
+ *
+ * Calculate the change in speed required to give a dynamic body 
+ * like a ship enough kinetic energy to escape the gravitational well of a 
+ * gravitational body like a planet.
+ *
+ * Note: this method will return a negative value if the body already has more than enough kinetic energy.
+ *
+ * > changeInSpeedRequiredToEscapeGravityWell = 
+ *             orbitingBody:ChangeInSpeedRequiredToEscapeGravityWellOf(planetBody)
+ *
+ * Parameters:
+ *
+ *   planetBody - The body belonging to the planet whose gravitational pull
+ *                is experienced by the orbiting body.
+ *
+ *   orbitingBody - The body experiencing the planets gravity 
+ *                  (a body can be said to be an orbiting body even if it 
+ *                  will escape or crash into the planet).
+ *                  This body must not be on orbit rails like a moon or a space station.
+ *                  It must be a dynamic body like a ship, a missile etc. See the comments for body:IsDynamic for details.
+ *
+ * Returns:
+ *
+ *   changeInSpeedRequiredToEscapeGravityWell - The difference between current speed and that required to escape the well
+ *                                          in meters/s.
+ *
+ * Availability:
+ *
+ *   alpha 28
+ *
+ * Status:
+ *
+ *   Experimental
+ */
+
+// XXX this gives the escape velocity to required to reach a point at infinity. 
+//     gravitational fields don't extend beyond several radii so perhaps we need to state the velocity to reach edge of the rotating frame.
+// To do: the derivation to make reasoning followable throws up some useful intermedioate quantities (velocity, escape energies etc.). these may be worth exposing too.
+//        compilers should be capable of doing the cancellations and combining the derivation into one expression
+
+static int l_change_in_speed_required_to_escape_gravity_well(lua_State *l)
+{
+	Body *b = LuaBody::GetFromLua(1);
+	Body *planet = LuaBody::GetFromLua(2);
+	
+	// check the orbiting body is a dynamic body
+	// and not a body on orbit rails like a planet
+	if (b->IsType(Object::DYNAMICBODY)) {
+		// the body near the planet (usually a ship, but can be a missile etc.)
+		DynamicBody *orbitingBody = static_cast<DynamicBody *>(b);
+
+		// distance between planet center and body in meters
+		const double distance = orbitingBody->GetPositionRelTo(planet).Length();
+		// mass of ship in kg
+		const double massOrbitingBody = orbitingBody->GetMass();
+
+		// the mass of the planet in kg
+		const double massPlanet = planet->GetMass();
+
+		// velocity relative to planet
+		const vector3d velRelToPlanet = orbitingBody->GetVelocityRelTo(planet);
+
+		// speed of orbiting body relative to the planet in m/s
+		const double speedRelToPlanet = velRelToPlanet.Length();
+
+		// kinetic energy of the orbiting body by virtue of its motion relative to the planet
+		// standard KE = (1/2) * m*v^2 formula. units of Joules
+		const double kineticEnergyOrbitingBody = 0.5*massOrbitingBody*speedRelToPlanet*speedRelToPlanet;
+
+		// This is the energy a body at infinity falling to this level due to gravitational attraction will have gained 
+		// In other words, this is the energy required to escape the gravitational field of the planet.
+		// Derivation:
+		// it is derived by calculating the work done on the body by gravity in moving from infinity to 
+		// a distance away from the planet center.
+		// W = integral[F dr] (r=d) - integral[F dr] (r=0)
+		// F = -G*Mp*Mb/r^2 , integral[F dr] = G*Mp*Mb/r
+		// W = G*Mp*Mb/(d) - G*Mp*Mb/(+inf) = G*Mp*Mb/d - 0
+		// W = G*Mp*Mb/d . Units of Joules.
+		const double escapeEnergyOrbitingBody = (G*massOrbitingBody*massPlanet/distance);
+
+		// the speed needed to escape the gravitational well in m/s (also known as escape velocity)
+		// v = sqrt(2*energy/m) (c.f. energy = (1/2)*mv^2)
+		const double escapeSpeed = sqrt(2.0*escapeEnergyOrbitingBody/massOrbitingBody);
+
+		// change in speed relative to the planet required to escape from its gravity in meters per second
+		// note this can be negative if 
+		const double changeInSpeedNeededToEscape = escapeSpeed-speedRelToPlanet;
+
+		if (!planet->IsInSpace())
+			return luaL_error(l, "Body:ChangeInSpeedToEscapeGravityWellOf() arg #1 is not in space (probably a ship in hyperspace)");
+		if (!orbitingBody->IsInSpace())
+			return luaL_error(l, "Body:ChangeInSpeedToEscapeGravityWellOf() arg #2 is not in space (probably a ship in hyperspace)");
+		lua_pushnumber(l, changeInSpeedNeededToEscape);
+		return 1;
+	} else {
+		return luaL_error(l, "Body:ChangeInSpeedRequiredToEscapeGravityWellOf() arg #1 is not a body which can change speed like a ship or missile (i.e. not a dynamic body)");
+	}
+}
+
 template <> const char *LuaObject<Body>::s_type = "Body";
 
 template <> void LuaObject<Body>::RegisterClass()
@@ -297,6 +430,8 @@ template <> void LuaObject<Body>::RegisterClass()
 	static luaL_Reg l_methods[] = {
 		{ "IsDynamic",  l_body_is_dynamic  },
 		{ "DistanceTo", l_body_distance_to },
+		{ "BodyIsAnAstronomicalBody", l_body_is_an_astronomical_body },
+		{ "ChangeInSpeedRequiredToEscapeGravityWellOf", l_change_in_speed_required_to_escape_gravity_well },
 		{ 0, 0 }
 	};
 
