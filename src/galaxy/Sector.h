@@ -5,10 +5,13 @@
 #define _SECTOR_H
 
 #include "libs.h"
-#include <string>
-#include <vector>
+#include "galaxy/SystemPath.h"
 #include "galaxy/StarSystem.h"
 #include "galaxy/CustomSystem.h"
+#include <string>
+#include <vector>
+
+class Faction;
 
 // Special case mtrand replacement solution for sector generation
 // with the same interfaces.
@@ -28,13 +31,13 @@ public:
 		// avoid zero seed values by changing range of values from 
 		// [-2^31-1, +2^31] to [1, 2^32-1]
 		//printf("start seed    : s[0] %u, s[1] %u, s[2] %u, s[3] %u\n", seed_[0], seed_[1], seed_[2], seed_[3]);
-		Uint32 d = 2^31-1;
+		const Uint32 d = 0x7FFFFFFF;
 		Uint32 t[4];
-		t[0] = (seed_[0] > 0)?Uint32(seed_[0])+d:Uint32(-seed_[0])+d; 
-		t[1] = (seed_[1] > 0)?Uint32(seed_[1])+d:Uint32(-seed_[1])+d;  
-		t[2] = (seed_[2] > 0)?Uint32(seed_[2])+d:Uint32(-seed_[2])+d;  
-		// universe seed is left unchanged
-		t[3] = Uint32(seed_[3]);
+
+		s[0] = t[0] = (seed_[0] >= 0)?Uint32(seed_[0])+d:Uint32(d+seed_[0]); 
+		s[1] = t[1] = (seed_[1] >= 0)?Uint32(seed_[1])+d:Uint32(d+seed_[1]);  
+		s[2] = t[2] = (seed_[2] >= 0)?Uint32(seed_[2])+d:Uint32(d+seed_[2]);  
+		s[3] = t[3] = Uint32(seed_[3]);    // universe seed is left unchanged
 
 		GenerateState(t);
 		//t[0] = SmallStateRNG(t[0], 8);
@@ -118,18 +121,20 @@ public:
 	Sector(int x, int y, int z);
 	static float DistanceBetween(const Sector *a, int sysIdxA, const Sector *b, int sysIdxB);
 	static void Init();
+
 	// Sector is within a bounding rectangle - used for SectorView m_sectorCache pruning.
 	bool WithinBox(const int Xmin, const int Xmax, const int Ymin, const int Ymax, const int Zmin, const int Zmax) const;
+	bool Contains(const SystemPath sysPath) const;
+
+	// sets appropriate factions for all systems in the sector
+	void AssignFactions();
 
 	class System {
 	public:
-		System() : customSys(0), m_queriedStarSystem(false), m_isInhabited(false) {};
+		System(int x, int y, int z): customSys(0), population(-1), sx(x), sy(y), sz(z) {};
 		~System() {};
 
 		// Check that we've had our habitation status set
-		bool IsSetInhabited() const { return m_queriedStarSystem; }
-		void SetInhabited(bool inhabited) { m_isInhabited = inhabited; m_queriedStarSystem = true; }
-		bool IsInhabited() const { return m_isInhabited; }
 
 		// public members
 		std::string name;
@@ -138,17 +143,19 @@ public:
 		SystemBody::BodyType starType[4];
 		Uint32 seed;
 		const CustomSystem *customSys;
-		Color factionColour;
+		Faction *faction;
+		fixed population;
 
-	private:
-		bool m_queriedStarSystem;
-		bool m_isInhabited;
+		vector3f FullPosition() { return Sector::SIZE*vector3f(float(sx), float(sy), float(sz)) + p; };
+
+		int sx, sy, sz;
 	};
 	std::vector<System> m_systems;
+
 private:
-	void GetCustomSystems();
-	std::string GenName(System &sys, XorshiftRand &rand);
 	int sx, sy, sz;
+	void GetCustomSystems();
+	std::string GenName(System &sys, int si, XorshiftRand &rand);
 };
 
 #endif /* _SECTOR_H */
